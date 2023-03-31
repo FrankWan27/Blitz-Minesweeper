@@ -1,0 +1,19 @@
+{
+  "name": "blitz-minesweeper",
+  "private": true,
+  "version": "1.0.0",
+  "repository": "git@github.com:FrankWan27/Blitz-Minesweeper.git",
+  "author": "Frank Wan <frankwan27@gmail.com>",
+  "license": "MIT",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ] 
+  },
+  "scripts": {
+    "start:dev:client": "yarn workspace @blitz-minesweeper/client start:dev",
+    "start:dev:server": "yarn workspace @blitz-minesweeper/server start:dev",
+    "start:prod:client": "yarn workspace @blitz-minesweeper/client start:prod",
+    "start:prod:server": "yarn workspace @blitz-minesweeper/server start:prod"
+  }
+}

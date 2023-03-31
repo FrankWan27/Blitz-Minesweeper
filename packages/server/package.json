@@ -1,0 +1,10 @@
+{
+  "name": "@blitz-minesweeper/server",
+  "version": "1.0.0",
+  "dependencies": {
+    "@blitz-minesweeper/shared": "*",
+    "@nestjs/platform-socket.io": "^9.3.12",
+    "@nestjs/websockets": "^9.3.12",
+    "socket.io": "^4.6.1"
+  }
+}

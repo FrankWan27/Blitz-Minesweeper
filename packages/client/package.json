@@ -1,0 +1,7 @@
+{
+  "name": "@blitz-minesweeper/client",
+  "version": "1.0.0",
+  "dependencies": {
+    "@blitz-minesweeper/shared": "*"
+  }
+}
