@@ -9,6 +9,6 @@ TODO:
 	- Asks for player name
 
 FOR LATER:
-	- chain reveal when blank space
-	- flags
-	- middle click reveal
+- chain reveal when blank space
+- flags
+- middle click reveal
