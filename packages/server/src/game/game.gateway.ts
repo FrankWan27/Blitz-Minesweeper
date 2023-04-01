@@ -1,13 +1,18 @@
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { ClientEvents } from '@shared/ClientEvents';
 import { ServerEvents } from '@shared/ServerEvents';
 import { Socket } from 'socket.io';
 
 @WebSocketGateway()
-export class GameGateway {
+export class GameGateway implements OnGatewayInit {
+  afterInit(server: any): any {
+     console.log("i am initied");
+  }
+
   @SubscribeMessage(ClientEvents.Ping)
-  onPing(client: Socket): void {
-    client.emit(ServerEvents.Pong, {
+  onPing(socket: Socket): void {
+    console.log("recieved a ping");
+    socket.emit(ServerEvents.Pong, {
       message: 'pong',
     });
   }
