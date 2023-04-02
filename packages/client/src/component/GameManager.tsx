@@ -1,13 +1,9 @@
 import { io } from "socket.io-client";
-import SocketManager from "./websocket/SocketManager";
+import socketManager from "./websocket/SocketManager";
 
 const socket = io();
-
+const sm = socketManager;
 export default function GameManager() {
-    console.log(socket);
-    socket.emit('client.ping', {message: "ping"});
-    socket.on('server.pong', () => {
-        console.log("hello");
-    })
+    
     return (<></>);
 }

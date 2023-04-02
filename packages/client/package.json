@@ -23,6 +23,7 @@
   },
   "proxy": "http://localhost:5000",
   "scripts": {
+    "start:dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

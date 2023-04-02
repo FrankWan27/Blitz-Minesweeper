@@ -1,13 +1,13 @@
 import React from 'react'
-import SocketManager from './websocket/SocketManager';
+import socketManager from './websocket/SocketManager';
 
 const JoinLobby = () => {
-  const sm = new SocketManager();
+  const sm = socketManager;
   
   return (
-    <div><form className='input'>
-        <input type="input" className="inputBox" placeholder="Enter LobbyID"/>
-        
+    <div>
+    <form className='input'>
+    <input type="input" className="inputBox" placeholder="Enter LobbyID"/>  
     </form>
     <button onClick={() => sm.ping()}>Join</button></div>
   )

@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { showNotification } from '@mantine/notifications';
 import React, { useState } from "react";
 
-export default class SocketManager
+class SocketManager
 {
     public socket: Socket;
     private connected: boolean = true;
@@ -12,9 +12,6 @@ export default class SocketManager
     constructor()
     {
         this.socket = io();
-        console.log(
-            "constructoring"
-        )
         this.onConnect();
         this.onDisconnect();
         this.onPong();
@@ -47,3 +44,6 @@ export default class SocketManager
     console.log("pinging");
   }
 }
+
+const socketManager = new SocketManager();
+export default socketManager;
