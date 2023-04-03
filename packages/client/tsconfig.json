@@ -21,8 +21,8 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
-      "@shared/*": [
-          "../../shared/*"
+      "@shared": [
+          "./shared/index.d.ts"
       ]
     }
   },

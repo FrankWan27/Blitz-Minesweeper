@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-// import { ClientEvents } from '@shared/ClientEvents';
+import { ClientEvents, ServerEvents } from '@shared';
 // @ts-ignore
 import { showNotification } from '@mantine/notifications';
 import React, { useState } from "react";
@@ -38,12 +38,12 @@ class SocketManager
 
   public ping(): void
   {
-    // let s = ClientEvents.Ping;
+    let s = ClientEvents.Ping;
     console.log(this.socket);
     this.socket.emit('client.ping', {message: "ping"});
     console.log("pinging");
   }
 }
 
-const socketManager = new SocketManager();
+const socketManager = Object.freeze(new SocketManager());
 export default socketManager;

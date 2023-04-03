@@ -1,6 +1,5 @@
 import { OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
-import { ClientEvents } from '@shared/ClientEvents';
-import { ServerEvents } from '@shared/ServerEvents';
+import { ClientEvents, ServerEvents } from '@shared';
 import { Socket } from 'socket.io';
 
 @WebSocketGateway()
@@ -16,6 +15,12 @@ export class GameGateway implements OnGatewayInit {
       message: 'pong',
     });
   }
+
+  @SubscribeMessage(ClientEvents.LobbyCreate)
+  onLobbyCreate(socket: Socket): void {
+    
+  }
+
 
   handleMessage(client: any, payload: any): string {
     return 'Hello world!';
