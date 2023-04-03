@@ -1,4 +1,4 @@
-import { ServerEvents } from "./ServerEvents"
+import { ServerEvents } from "../client/src/shared/ServerEvents"
 
 export type ServerPayloads = {
     [ServerEvents.Pong]: {

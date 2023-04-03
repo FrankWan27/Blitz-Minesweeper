@@ -18,8 +18,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@shared": [
-          "../../client/src/shared/index.d.ts"
+      "@shared/*": [
+          "../../client/src/shared/*"
       ]
     }
   }

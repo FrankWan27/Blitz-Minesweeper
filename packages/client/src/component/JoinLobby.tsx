@@ -9,8 +9,9 @@ const JoinLobby = () => {
     <form className='input'>
     <input type="input" className="inputBox" placeholder="Enter LobbyID"/>  
     </form>
-    <button onClick={() => sm.ping()}>Join</button></div>
-  )
+    <button onClick={() => sm.createLobby()}>Create</button>
+    <button onClick={() => sm.joinLobby("lobbyID")}>Join</button></div>
+    )
 }
 
 export default JoinLobby

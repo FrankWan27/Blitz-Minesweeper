@@ -1,28 +1,45 @@
 import { OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
-import { ClientEvents, ServerEvents } from '@shared';
+import { ClientEvents } from '@shared/ClientEvents';
+import { ServerEvents } from '@shared/ServerEvents';
 import { Socket } from 'socket.io';
+import { LobbyManager } from './lobby.manager';
+import { Client } from './client';
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit {
+
+  constructor(private readonly lobbyManager: LobbyManager) {}
+
   afterInit(server: any): any {
-     console.log("i am initied");
+    this.lobbyManager.server = server;
+     console.log("Game server initialized");
+  }
+
+  async handleConnection(socket: Socket, ...args: any[]) {
+    this.lobbyManager.initializeSocket(socket as Client);
+  }
+
+  async handleDisconnect(socket: Socket) {
+    this.lobbyManager.terminateSocket(socket as Client);
   }
 
   @SubscribeMessage(ClientEvents.Ping)
-  onPing(socket: Socket): void {
+  onPing(client: Client): void {
     console.log("recieved a ping");
-    socket.emit(ServerEvents.Pong, {
+    client.emit(ServerEvents.Pong, {
       message: 'pong',
     });
   }
 
   @SubscribeMessage(ClientEvents.LobbyCreate)
-  onLobbyCreate(socket: Socket): void {
-    
+  onLobbyCreate(client: Client): void {
+    console.log(client + " creating lobby")
+    this.lobbyManager.createLobby(client);
   }
 
-
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  @SubscribeMessage(ClientEvents.LobbyJoin)
+  onLobbyJoin(client: Client, data: any): void {
+    console.log(client.id + " joining lobby ", data)
+    this.lobbyManager.joinLobby(client, data.lobbyId);
   }
 }
