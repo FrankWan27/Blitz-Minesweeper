@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 // import { ClientEvents, ServerEvents } from '../../shared/index';
-import { ClientEvents } from '../../shared/ClientEvents';
-import { ServerEvents } from '../../shared/ServerEvents';
+import { ClientEvents, ServerEvents } from '../../shared/Events';
+import { Payloads } from '../../shared/Payloads';
 import GameManager from '../GameManager'
 // @ts-ignore
 import { showNotification } from '@mantine/notifications';
@@ -18,6 +18,8 @@ class SocketManager
         this.onConnect();
         this.onDisconnect();
         this.onPong();
+        this.onJoinLobby();
+        this.onGameboardUpdate();
     }
 
     private onConnect(): void
@@ -25,12 +27,26 @@ class SocketManager
         this.socket.on('connect', () => {
             console.log("connected");
         if (!this.connected) {
+            showNotification({
+                message: 'Reconnected to server!',
+                color: 'green',
+                autoClose: 2000,
+              });
+              this.connected = true;
         }
         });
     }
 
   private onDisconnect(): void
   {
+    this.socket.on('disconnect', () => {
+    });
+  }
+
+  private onGameboardUpdate(): void {
+    this.socket.on(ServerEvents.GameboardUpdate, (data) => {
+
+    }
   }
 
   private onPong(): void {
@@ -55,14 +71,18 @@ class SocketManager
   }
 
   public onJoinLobby() {
-    this.socket.on(ServerEvents.ClientJoinLobby, (data : any) => {
-        console.log("joined lobby");
-        this.updateURL(data.lobbyId)
+    this.socket.on(ServerEvents.ClientJoinLobby, (data : Payloads.LobbyId) => {
+        showNotification({
+            message: 'Joined lobby ' + data.lobbyId,
+            color: 'green',
+            autoClose: 2000,
+          });
+        this.updateURL(data.lobbyId);
     })
   }
 
-  private updateURL(lobbyId: string) {
-    window.history.replaceState("", "", "/" + lobbyId);
+  private updateURL(str: string) {
+    window.history.replaceState("", "", "/" + str);
   }
 }
 

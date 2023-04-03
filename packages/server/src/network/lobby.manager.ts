@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import { Lobby, LobbyId } from "./lobby";
 import { Client } from "./client";
-import { ServerEvents } from "@shared/ServerEvents";
+import { ServerEvents } from "@shared/Events";
 
 export class LobbyManager {
     public server: Server;

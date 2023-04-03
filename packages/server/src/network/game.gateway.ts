@@ -1,6 +1,6 @@
 import { OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
-import { ClientEvents } from '@shared/ClientEvents';
-import { ServerEvents } from '@shared/ServerEvents';
+import { ClientEvents, ServerEvents } from '@shared/Events';
+import { Payloads } from '@shared/Payloads';
 import { Socket } from 'socket.io';
 import { LobbyManager } from './lobby.manager';
 import { Client } from './client';
@@ -23,14 +23,6 @@ export class GameGateway implements OnGatewayInit {
     this.lobbyManager.terminateSocket(socket as Client);
   }
 
-  @SubscribeMessage(ClientEvents.Ping)
-  onPing(client: Client): void {
-    console.log("recieved a ping");
-    client.emit(ServerEvents.Pong, {
-      message: 'pong',
-    });
-  }
-
   @SubscribeMessage(ClientEvents.LobbyCreate)
   onLobbyCreate(client: Client): void {
     console.log(client + " creating lobby")
@@ -38,8 +30,24 @@ export class GameGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage(ClientEvents.LobbyJoin)
-  onLobbyJoin(client: Client, data: any): void {
+  onLobbyJoin(client: Client, data: Payloads.LobbyId): void {
     console.log(client.id + " joining lobby ", data)
     this.lobbyManager.joinLobby(client, data.lobbyId);
+  }
+
+  @SubscribeMessage(ClientEvents.Move)
+  onClientMove(client: Client, data: Payloads.ClientMove): void {
+    if (!client.lobby) {
+      // throw new ServerException(SocketExceptions.LobbyError, 'You are not in a lobby');
+    }
+    client.lobby.clientMove(data);
+  }
+
+  @SubscribeMessage(ClientEvents.GetState)
+  onClientGetState(client: Client): void {
+    if (!client.lobby) {
+      // throw new ServerException(SocketExceptions.LobbyError, 'You are not in a lobby');
+    }
+    client.lobby.emitGameState(client.id);
   }
 }
