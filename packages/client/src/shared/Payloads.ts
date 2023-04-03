@@ -23,6 +23,10 @@ export namespace Payloads {
     x: number,
     y: number
   }
+
+  export type ServerException = {
+    message: string
+  }
 }
 
 export type TileState = number | 'bomb' | 'blank' | 'hidden' | 'flag';

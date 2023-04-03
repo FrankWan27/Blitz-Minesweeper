@@ -17,9 +17,9 @@ class SocketManager
         this.socket = io();
         this.onConnect();
         this.onDisconnect();
-        this.onPong();
         this.onJoinLobby();
         this.onGameboardUpdate();
+        this.onException();
     }
 
     private onConnect(): void
@@ -46,20 +46,7 @@ class SocketManager
   private onGameboardUpdate(): void {
     this.socket.on(ServerEvents.GameboardUpdate, (data) => {
 
-    }
-  }
-
-  private onPong(): void {
-    this.socket.on(ServerEvents.Pong, () => {
-        console.log("hello");
-    })
-  }
-
-  public ping(): void
-  {
-    console.log(this.socket);
-    this.socket.emit(ClientEvents.Ping, {message: "ping"});
-    console.log("pinging");
+    });
   }
 
   public joinLobby(lobbyId: string) {
@@ -81,10 +68,20 @@ class SocketManager
     })
   }
 
+  public onException() : void {
+    this.socket.on(ServerEvents.Exception, (data : Payloads.ServerException) => {
+        showNotification({
+            message: data.message,
+            color: 'red',
+        })
+    })
+  }
+
   private updateURL(str: string) {
     window.history.replaceState("", "", "/" + str);
   }
 }
+
 
 const socketManager = Object.freeze(new SocketManager());
 export default socketManager;

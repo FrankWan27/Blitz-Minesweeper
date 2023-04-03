@@ -1,6 +1,6 @@
 export enum ServerEvents
 {
-  Pong = 'server.pong',
+  Exception = 'exception',
   ClientJoinLobby = 'server.client.join.lobby',
   GameMessage = 'server.game.message',
   GameboardUpdate = 'server.gameboard.update',
@@ -9,7 +9,6 @@ export enum ServerEvents
 
 export const enum ClientEvents
 {
-  Ping = 'client.ping',
   LobbyCreate = 'client.lobby.create',
   LobbyJoin = 'client.lobby.join',
   LobbyLeave = 'client.lobby.leave',

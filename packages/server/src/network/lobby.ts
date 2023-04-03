@@ -4,6 +4,7 @@ import { Client, ClientId } from "./client";
 import { Minesweeper } from "game/minesweeper";
 import { ServerEvents } from "@shared/Events";
 import { Payloads } from "@shared/Payloads";
+import { ServerException } from "./server.exception";
 
 export class Lobby {
     public readonly id: LobbyId = nanoid(5);
@@ -18,6 +19,9 @@ export class Lobby {
     }
 
     public addClient(client: Client) {
+        if (client.lobby != null) {
+            throw new ServerException("You are already in a lobby!")
+        }
         this.clients.set(client.id, client);
         client.join(this.id);
         client.lobby = this;

@@ -1,23 +1,25 @@
+import { Button } from "@mantine/core";
 import React from "react";
+import { TileState } from "shared/Payloads";
 
-const Tile: React.FC<{
-    value: number | "X";
-    onClick: () => void;
-    onRightClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  }> = ({ value, onClick, onRightClick }) => (
-    <button className="tile" onClick={onClick} onContextMenu={onRightClick}>
-      {value}
-    </button>
-  );
+class Tile extends React.Component {
+    render() {
+        return (<Button>💣</Button>)
+    }
+}
 
 export default class Gameboard extends React.Component {
-    state = {
-        height: this.props.height,
-        width: this.props.width,
-        mines: this.props.mines
+
+    constructor(props) {
+        super(props);
     }
+    
     render() {
-        return <Tile/>;
+        if (!board) {
+            const sm = socketManager;
+
+        }
+        return (<Tile/>);
       }
 }
 
