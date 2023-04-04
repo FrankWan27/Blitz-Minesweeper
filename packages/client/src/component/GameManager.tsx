@@ -11,8 +11,9 @@ export default class GameManager extends React.Component {
     render() {
 
         this.state = {
-            board: [];
+            board: []
         }
+        
         return (
             <div className="game">
                 <JoinLobby/>
