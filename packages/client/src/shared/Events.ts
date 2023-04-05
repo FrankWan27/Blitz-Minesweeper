@@ -3,6 +3,7 @@ export enum ServerEvents
   Exception = 'exception',
   ClientJoinLobby = 'server.client.join.lobby',
   GameMessage = 'server.game.message',
+  GameStart = 'server.game.start',
   GameboardUpdate = 'server.gameboard.update',
   GameboardState = 'server.gameboard.state',
 }

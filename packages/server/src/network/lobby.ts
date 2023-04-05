@@ -13,7 +13,9 @@ export class Lobby {
 
     public readonly clients: Map<ClientId, Client> = new Map<ClientId, Client>();
 
-    private readonly game: Minesweeper = new Minesweeper(10, 10, 13);
+    private readonly game: Minesweeper = new Minesweeper(this, 10, 10, 13);
+
+    private readonly maxClients = 2;
 
     constructor(private readonly server: Server) {
     }
@@ -25,6 +27,9 @@ export class Lobby {
         this.clients.set(client.id, client);
         client.join(this.id);
         client.lobby = this;
+        if (this.clients.size >= this.maxClients) {
+            this.game.startGame();
+        }
     }
 
     public removeClient(client: Client) {
@@ -42,12 +47,18 @@ export class Lobby {
 
     public emitGameState(clientId?: ClientId) {
         if(clientId) {
-            this.clients.get(clientId).emit(ServerEvents.GameboardUpdate, this.game.getGameboardState(clientId));
+            this.clients.get(clientId).emit(ServerEvents.GameboardState, this.game.getGameboardState(clientId));
         } else {
             this.clients.forEach(client => {
-                client.emit(ServerEvents.GameboardUpdate, this.game.getGameboardState(client.id));
+                client.emit(ServerEvents.GameboardState, this.game.getGameboardState(client.id));
             });
         }
+    }
+
+    public emitGameStart() {
+        this.clients.forEach(client => {
+            client.emit(ServerEvents.GameStart);
+        });
     }
 }
 

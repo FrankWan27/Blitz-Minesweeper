@@ -4,6 +4,7 @@ import { Payloads } from '@shared/Payloads';
 import { Socket } from 'socket.io';
 import { LobbyManager } from './lobby.manager';
 import { Client } from './client';
+import { ServerException } from './server.exception';
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit {
@@ -25,7 +26,6 @@ export class GameGateway implements OnGatewayInit {
 
   @SubscribeMessage(ClientEvents.LobbyCreate)
   onLobbyCreate(client: Client): void {
-    console.log(client + " creating lobby")
     this.lobbyManager.createLobby(client);
   }
 
@@ -38,7 +38,7 @@ export class GameGateway implements OnGatewayInit {
   @SubscribeMessage(ClientEvents.Move)
   onClientMove(client: Client, data: Payloads.ClientMove): void {
     if (!client.lobby) {
-      // throw new ServerException(SocketExceptions.LobbyError, 'You are not in a lobby');
+      throw new ServerException('You are not in a lobby');
     }
     client.lobby.clientMove(data);
   }
@@ -46,7 +46,7 @@ export class GameGateway implements OnGatewayInit {
   @SubscribeMessage(ClientEvents.GetState)
   onClientGetState(client: Client): void {
     if (!client.lobby) {
-      // throw new ServerException(SocketExceptions.LobbyError, 'You are not in a lobby');
+      throw new ServerException('You are not in a lobby');
     }
     client.lobby.emitGameState(client.id);
   }

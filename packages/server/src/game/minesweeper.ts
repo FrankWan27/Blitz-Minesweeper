@@ -1,13 +1,20 @@
 import { Payloads, TileState } from '@shared/Payloads';
 import { ClientId } from 'network/client';
+import { Lobby } from 'network/lobby';
 
 export class Minesweeper {
     private board : Tile[][];
-    constructor(
+    constructor(private readonly lobby: Lobby,
         private width,
         private height,
         private bombs
-    ) {}
+    ) {
+        this.initializeBoard();
+    }
+
+    public startGame() {
+        this.lobby.emitGameStart();
+    }
 
     initializeBoard() {
         this.board = [];
@@ -142,10 +149,7 @@ function getRandomInt(max) {
 }
 
 class Tile {
-    public isHidden;
+    public isHidden = true;
     public isBomb;
     public hint : number;
-
-    constructor() {
-    }
 }

@@ -7,7 +7,7 @@ import GameManager from '../GameManager'
 import { showNotification } from '@mantine/notifications';
 import React, { useState } from "react";
 
-class SocketManager
+export class SocketManager
 {
     public socket: Socket;
     private connected: boolean = true;
@@ -17,8 +17,6 @@ class SocketManager
         this.socket = io();
         this.onConnect();
         this.onDisconnect();
-        this.onJoinLobby();
-        this.onGameboardUpdate();
         this.onException();
     }
 
@@ -43,28 +41,33 @@ class SocketManager
     });
   }
 
-  private onGameboardUpdate(): void {
-    this.socket.on(ServerEvents.GameboardUpdate, (data) => {
-
+  public onGameboardUpdate(func : (data : Payloads.GameboardTileUpdate) => void): void {
+    this.socket.on(ServerEvents.GameboardUpdate, (data: Payloads.GameboardTileUpdate) => {
+      func(data);
     });
   }
 
-  public joinLobby(lobbyId: string) {
-    this.socket.emit(ClientEvents.LobbyJoin, {lobbyId})
+  public onGameboardState(func : (data : Payloads.GameboardState) => void): void {
+    this.socket.on(ServerEvents.GameboardState, (data: Payloads.GameboardState) => {
+      func(data);
+    });
   }
 
-  public createLobby() {
-    this.socket.emit(ClientEvents.LobbyCreate)
+  public onGameStart(func : () => void): void {
+    this.socket.on(ServerEvents.GameStart, () => {
+      console.log("gamestart")
+      func();
+    });
   }
 
-  public onJoinLobby() {
+  public onJoinLobby(func : (data : Payloads.LobbyId) => void) {
     this.socket.on(ServerEvents.ClientJoinLobby, (data : Payloads.LobbyId) => {
         showNotification({
             message: 'Joined lobby ' + data.lobbyId,
             color: 'green',
             autoClose: 2000,
           });
-        this.updateURL(data.lobbyId);
+        func(data);
     })
   }
 
@@ -76,9 +79,17 @@ class SocketManager
         })
     })
   }
+  
+  public joinLobby(lobbyId: string) {
+    this.socket.emit(ClientEvents.LobbyJoin, {lobbyId})
+  }
 
-  private updateURL(str: string) {
-    window.history.replaceState("", "", "/" + str);
+  public createLobby() {
+    this.socket.emit(ClientEvents.LobbyCreate)
+  }
+
+  public getGameState() {
+    this.socket.emit(ClientEvents.GetState)
   }
 }
 

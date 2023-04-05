@@ -1,24 +1,51 @@
 import { io } from "socket.io-client";
 import socketManager from "./websocket/SocketManager";
 import Gameboard from "./Gameboard";
-import React from "react";
+import { useState } from "react";
 import JoinLobby from "./JoinLobby";
 import { TileState } from "shared/Payloads";
 
 const socket = io();
 const sm = socketManager;
-export default class GameManager extends React.Component {
-    render() {
 
-        this.state = {
-            board: []
-        }
-        
-        return (
-            <div className="game">
-                <JoinLobby/>
-                <Gameboard board={this.state.board}/>
-            </div>
-        );
+export default function GameManager() {
+    const [lobby, setLobby] = useState("");
+    const [gameStart, setGameStart] = useState(false);
+    const [board, setBoard] = useState<TileState[][]>([]);
+    const [width, setWidth] = useState(1);
+    const [height, setHeight] = useState(1);
+
+    sm.onJoinLobby((data) => {
+        updateURL(data.lobbyId);
+        setLobby(data.lobbyId);
+    })
+
+    sm.onGameboardState((data) => {
+        setBoard(data.tiles);
+        setWidth(data.width);
+        setHeight(data.height);
+        console.log(lobby);
+    })
+
+    sm.onGameStart(() => {
+        sm.getGameState();
+        timeout(1000).then(() => setGameStart(true));
+    })
+
+    const updateURL = (str: string) => {
+        window.history.replaceState("", "", "/" + str);
     }
+    
+    return (
+        <div className="game">
+            In Lobby: {lobby}
+            {gameStart ? <Gameboard board={board} width={width} height={height}/> : <JoinLobby/>}
+        </div>
+    );
 }
+function timeout(delay: number) {
+    return new Promise( res => setTimeout(res, delay) );
+}
+
+
+
