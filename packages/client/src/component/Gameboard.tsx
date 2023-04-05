@@ -19,7 +19,6 @@ const Tile: React.FC<TileProps> = (props) => {
         return props.state;
     }
   }
-
   const tileClick = () => {
     console.log("clicked")
     if (props.state != 'hidden') {
@@ -57,13 +56,11 @@ interface TileProps {
 export const Gameboard: React.FC<GameboardProps> = (props) => {
   const grid = [];
   const tableWidth = 60;
-
   for (let y = 0; y < props.height; y++) {
     const row = [];
     for (let x = 0; x < props.width; x++) {
       row.push(<Tile state={props.board[x][y]} tileWidth={tableWidth / props.width} x={x} y={y} key={`${x}-${y}`} />);
     }
-
     grid.push(<tr key={y}>{row}</tr>);
   }
 

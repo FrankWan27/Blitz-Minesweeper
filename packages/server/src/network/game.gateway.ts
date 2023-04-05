@@ -9,11 +9,11 @@ import { ServerException } from './server.exception';
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit {
 
-  constructor(private readonly lobbyManager: LobbyManager) {}
+  constructor(private readonly lobbyManager: LobbyManager) { }
 
   afterInit(server: any): any {
     this.lobbyManager.server = server;
-     console.log("Game server initialized");
+    console.log("Game server initialized");
   }
 
   async handleConnection(socket: Socket, ...args: any[]) {
@@ -49,6 +49,7 @@ export class GameGateway implements OnGatewayInit {
     if (!client.lobby) {
       throw new ServerException('You are not in a lobby');
     }
+    console.log("recieved request for game state from " + client.id)
     client.lobby.emitGameState(client.id);
   }
 }
