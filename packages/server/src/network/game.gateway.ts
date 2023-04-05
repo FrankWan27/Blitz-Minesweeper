@@ -49,6 +49,7 @@ export class GameGateway implements OnGatewayInit {
     if (!client.lobby) {
       throw new ServerException('You are not in a lobby');
     }
+    console.log("recieved request for game state from " + client.id)
     client.lobby.emitGameState(client.id);
   }
 }

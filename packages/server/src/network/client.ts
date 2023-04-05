@@ -7,8 +7,8 @@ import { Lobby } from "./lobby";
 // }
 
 export class Client extends Socket {
-    name: string;
-    lobby: null | Lobby;
+  name: string;
+  lobby: null | Lobby;
 }
 
 export type ClientId = string;

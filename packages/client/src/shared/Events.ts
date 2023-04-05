@@ -1,5 +1,4 @@
-export enum ServerEvents
-{
+export enum ServerEvents {
   Exception = 'exception',
   ClientJoinLobby = 'server.client.join.lobby',
   GameMessage = 'server.game.message',
@@ -8,8 +7,7 @@ export enum ServerEvents
   GameboardState = 'server.gameboard.state',
 }
 
-export const enum ClientEvents
-{
+export const enum ClientEvents {
   LobbyCreate = 'client.lobby.create',
   LobbyJoin = 'client.lobby.join',
   LobbyLeave = 'client.lobby.leave',
