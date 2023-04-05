@@ -25,7 +25,7 @@ export class LobbyManager {
         }
 
         lobby.addClient(client);
-        this.server.emit(ServerEvents.ClientJoinLobby, {lobbyId});
+        client.emit(ServerEvents.ClientJoinLobby, {lobbyId});
     }
 
     public initializeSocket(client: Client) {

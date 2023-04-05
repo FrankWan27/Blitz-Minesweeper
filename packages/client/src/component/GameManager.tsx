@@ -24,12 +24,11 @@ export default function GameManager() {
         setBoard(data.tiles);
         setWidth(data.width);
         setHeight(data.height);
-        console.log(lobby);
+        setGameStart(true)
     })
 
     sm.onGameStart(() => {
         sm.getGameState();
-        timeout(1000).then(() => setGameStart(true));
     })
 
     const updateURL = (str: string) => {
