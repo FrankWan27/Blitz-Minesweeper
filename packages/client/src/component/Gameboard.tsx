@@ -29,11 +29,13 @@ const Tile: React.FC<TileProps> = (props) => {
   }
 
   return (
-    <td
-      style={{ width: '30px', height: '30px' }}
-      className={'tile' + (props.state == 'hidden' ? ' hidden' : ' revealed')}
-      onClick={tileClick}>
-      {getText()}
+    <td>
+      <div
+        style={{ width: `${props.tileWidth}vw` }}
+        className={`tile ${props.state === 'hidden' ? 'hidden' : 'revealed'}`}
+        onClick={tileClick} >
+        {getText()}
+      </div>
     </td>
   )
 }
@@ -46,24 +48,23 @@ interface GameboardProps {
 
 interface TileProps {
   state: TileState,
+  tileWidth: number,
   x: number,
   y: number
 }
 
-
-
 export const Gameboard: React.FC<GameboardProps> = (props) => {
   const grid = [];
-
+  const tableWidth = 60;
   for (let y = 0; y < props.height; y++) {
     const row = [];
     for (let x = 0; x < props.width; x++) {
-      row.push(<Tile state={props.board[x][y]} x={x} y={y} key={`${x}-${y}`} />);
+      row.push(<Tile state={props.board[x][y]} tileWidth={tableWidth / props.width} x={x} y={y} key={`${x}-${y}`} />);
     }
     grid.push(<tr key={y}>{row}</tr>);
   }
 
-  return <table>{grid}</table>;
+  return <table style={{width: `${tableWidth}vw`}}>{grid}</table>;
 }
 
 export default Gameboard;
