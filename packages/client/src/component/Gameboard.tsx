@@ -2,7 +2,10 @@
 import React from "react";
 import { TileState } from "shared/Payloads";
 import "./Gameboard.css"
-const Tile: React.FC<{state: TileState}> = (props) => {
+import socketManager from "./websocket/SocketManager";
+
+const sm = socketManager;
+const Tile: React.FC<TileProps> = (props) => {
     const getText = () => {
         switch (props.state) {
             case 'bomb':
@@ -16,26 +19,41 @@ const Tile: React.FC<{state: TileState}> = (props) => {
               return props.state;
         }
     }
-
+    const tileClick = () => {
+        console.log("clicked")
+        if (props.state != 'hidden') {
+            return;
+        }
+        sm.move(props.x, props.y);
+        console.log("clicked and hidden")
+    }
+    
     return (
-    <td><div className='btn' style={{width: '30px', height: '30px'}}>{getText()}</div></td>
+    <td style={{width: '30px', height: '30px'}}><div className='btn' onClick={tileClick}>{getText()}</div></td>
     )
 }
 
-interface Props {
+interface GameboardProps {
     board: TileState[][],
     width : number, 
-    height : number
+    height : number,
 }
 
-export const Gameboard: React.FC<Props> = (props) => {
+interface TileProps {
+    state: TileState,
+    x : number, 
+    y : number
+}
+
+
+
+export const Gameboard: React.FC<GameboardProps> = (props) => {
     const grid = [];
-    // console.log(props);
     
     for (let y = 0; y < props.height; y++) {
         const row = [];
         for (let x = 0; x < props.width; x++) {
-            row.push(<Tile state={props.board[x][y]}key={'${x}-${y}'} />);
+            row.push(<Tile state={props.board[x][y]} x={x} y={y} key={`${x}-${y}`} />);
         }
         grid.push(<tr key={y}>{row}</tr>);
     }

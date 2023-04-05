@@ -39,13 +39,17 @@ export class Lobby {
     }
 
     public clientMove(move : Payloads.ClientMove) {
+
         if (this.game.validateMove(move)) {
+            console.log("moving validated")
+
             this.game.executeMove(move);
             this.emitGameState();
         }
     }
 
     public emitGameState(clientId?: ClientId) {
+        console.log("emitting state")
         if(clientId) {
             this.clients.get(clientId).emit(ServerEvents.GameboardState, this.game.getGameboardState(clientId));
         } else {

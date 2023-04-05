@@ -91,6 +91,10 @@ export class SocketManager
   public getGameState() {
     this.socket.emit(ClientEvents.GetState)
   }
+
+  public move(x: number, y: number) {
+    this.socket.emit(ClientEvents.Move, {type: 'reveal', x, y})
+  }
 }
 
 

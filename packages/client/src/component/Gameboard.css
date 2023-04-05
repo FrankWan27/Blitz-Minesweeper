@@ -8,7 +8,11 @@ table, td {
 
 table {
   background-color: mediumturquoise;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
   padding: 5px;
+  aspect-ratio: 1 / 1;
 }
 
 td {

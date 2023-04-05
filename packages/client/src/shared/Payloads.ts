@@ -18,7 +18,6 @@ export namespace Payloads {
   }
 
   export type ClientMove = {
-    clientId: string,
     type: MoveType,
     x: number,
     y: number
