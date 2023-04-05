@@ -1,8 +1,7 @@
-import { Button } from "@mantine/core";
+// import { Button } from "@mantine/core";
 import React from "react";
 import { TileState } from "shared/Payloads";
-import './Gameboard.css';
-
+import "./Gameboard.css"
 const Tile: React.FC<{state: TileState}> = (props) => {
     const getText = () => {
         switch (props.state) {
@@ -21,7 +20,6 @@ const Tile: React.FC<{state: TileState}> = (props) => {
     return (
     <td><div className='btn' style={{width: '30px', height: '30px'}}>{getText()}</div></td>
     )
-    
 }
 
 interface Props {
@@ -32,7 +30,7 @@ interface Props {
 
 export const Gameboard: React.FC<Props> = (props) => {
     const grid = [];
-    console.log(props);
+    // console.log(props);
     
     for (let y = 0; y < props.height; y++) {
         const row = [];
