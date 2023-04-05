@@ -1,29 +1,27 @@
 import { Button } from "@mantine/core";
 import React from "react";
 import { TileState } from "shared/Payloads";
+import './Gameboard.css';
 
-class Tile extends React.Component<{state: TileState}> {
-
-    constructor(props: { state: TileState; }) {
-        super(props);
-    }
-    render() {
-        if (this.props.state == 'bomb') {
-            return (<Button>💣</Button>)
-        }
-        else if(this.props.state == 'flag') {
-            return (<Button>🚩</Button>)
-        }
-        else if(this.props.state == 'hidden') {
-            return (<Button> </Button>)
-        }
-        else if(this.props.state == 'blank') {
-            return (<Button> </Button>)
-        }
-        else if(typeof this.props.state == 'number') {
-            return (<Button>{this.props.state}</Button>)
+const Tile: React.FC<{state: TileState}> = (props) => {
+    const getText = () => {
+        switch (props.state) {
+            case 'bomb':
+              return '💣';
+            case 'flag':
+              return '🚩';
+            case 'hidden':
+            case 'blank':
+              return ' ';
+            default:
+              return props.state;
         }
     }
+
+    return (
+    <td><div className='btn' style={{width: '30px', height: '30px'}}>{getText()}</div></td>
+    )
+    
 }
 
 interface Props {
@@ -36,15 +34,15 @@ export const Gameboard: React.FC<Props> = (props) => {
     const grid = [];
     console.log(props);
     
-    for (let x = 0; x < props.width; x++) {
-        const col = [];
-        for (let y = 0; y < props.height; y++) {
-            col.push(<Tile state={props.board[x][y]}key={'${x}-${y}'} />);
+    for (let y = 0; y < props.height; y++) {
+        const row = [];
+        for (let x = 0; x < props.width; x++) {
+            row.push(<Tile state={props.board[x][y]}key={'${x}-${y}'} />);
         }
-        grid.push(<div key={x}>{col}</div>);
+        grid.push(<tr key={y}>{row}</tr>);
     }
 
-    return <div>{grid}</div>;
+    return <table>{grid}</table>;
 }
 
 export default Gameboard;
