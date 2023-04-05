@@ -32,6 +32,10 @@ export default function GameManager() {
       sm.getGameState();
     })
 
+    sm.onLobbyState((data) => {
+      console.log(data);
+    })
+
     const updateURL = (str: string) => {
       window.history.replaceState("", "", "/" + str);
     }

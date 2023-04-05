@@ -3,8 +3,9 @@ import { Server } from "socket.io"
 import { Client, ClientId } from "./client";
 import { Minesweeper } from "game/minesweeper";
 import { ServerEvents } from "@shared/Events";
-import { Payloads } from "@shared/Payloads";
+import { Payloads, PlayerStatus } from "@shared/Payloads";
 import { ServerException } from "./server.exception";
+import { TurnTimer } from "game/turnTimer";
 
 export class Lobby {
   public readonly id: LobbyId = nanoid(5);
@@ -13,9 +14,15 @@ export class Lobby {
 
   public readonly clients: Map<ClientId, Client> = new Map<ClientId, Client>();
 
-  private readonly game: Minesweeper = new Minesweeper(this, 10, 10, 13);
+  public gameStarted: boolean = false;
+  public gameEnded: boolean = false;
+  public gamePaused: boolean = false;
+
+  private readonly game: Minesweeper = new Minesweeper(this, 16, 16, 40);
 
   private readonly maxClients = 2;
+
+  private readonly turnTimer = new TurnTimer(this);
 
   constructor(private readonly server: Server) {
   }
@@ -28,7 +35,9 @@ export class Lobby {
     client.join(this.id);
     client.lobby = this;
     if (this.clients.size >= this.maxClients) {
+      this.gameStarted = true;
       this.game.startGame();
+      this.turnTimer.startGame();
     }
   }
 
@@ -38,18 +47,20 @@ export class Lobby {
     client.lobby = null;
   }
 
-  public clientMove(move: Payloads.ClientMove) {
-
-    if (this.game.validateMove(move)) {
-      console.log("moving validated")
-
-      this.game.executeMove(move);
-      this.emitGameState();
+  public clientMove(clientId: ClientId, move: Payloads.ClientMove) {
+    if (!this.turnTimer.isCurrentPlayer(clientId)) {
+      return;
     }
+    if (!this.game.validateMove(move)) {
+      return;
+    }
+    this.game.executeMove(move);
+    this.turnTimer.nextPlayer();
+    this.emitGameState();
   }
 
   public emitGameState(clientId?: ClientId) {
-    console.log("emitting state to " + clientId)
+    this.emitLobbyState(clientId);
     if (clientId) {
       this.clients.get(clientId).emit(ServerEvents.GameboardState, this.game.getGameboardState(clientId));
     } else {
@@ -59,10 +70,41 @@ export class Lobby {
     }
   }
 
+  public emitLobbyState(clientId?: ClientId) {
+    if (clientId) {
+      this.clients.get(clientId).emit(ServerEvents.LobbyState, this.getLobbyState());
+    } else {
+      this.clients.forEach(client => {
+        client.emit(ServerEvents.LobbyState, this.getLobbyState());
+      });
+    }
+  }
+
+  private getLobbyState() : Payloads.LobbyState{
+    const playerStatus = new Map<ClientId, PlayerStatus>();
+    this.turnTimer.playerStatus.forEach((player, clientId) => {
+      playerStatus.set(clientId, {alive: player.alive, timeRemaining: player.timeRemaining})
+    })
+    return {
+      lobbyId: this.id,
+      gameStarted: this.gameStarted,
+      gamePaused: this.gamePaused,
+      gameEnded: this.gameEnded,
+      playerCount: this.clients.size,
+      currentPlayer: this.turnTimer.currentPlayer,
+      playerStatus: playerStatus,
+    }
+  }
+
   public emitGameStart() {
     this.clients.forEach(client => {
       client.emit(ServerEvents.GameStart);
     });
+  }
+
+  public gameOver(clientId: ClientId) {
+    console.log("GAMEOVER WINNER IS ", clientId)
+    this.gameEnded = true;
   }
 }
 

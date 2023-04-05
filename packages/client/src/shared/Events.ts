@@ -1,6 +1,8 @@
 export enum ServerEvents {
   Exception = 'exception',
   ClientJoinLobby = 'server.client.join.lobby',
+  LobbyState = 'server.lobby.state',
+
   GameMessage = 'server.game.message',
   GameStart = 'server.game.start',
   GameboardUpdate = 'server.gameboard.update',

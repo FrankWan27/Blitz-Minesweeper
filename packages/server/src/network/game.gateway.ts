@@ -40,8 +40,7 @@ export class GameGateway implements OnGatewayInit {
     if (!client.lobby) {
       throw new ServerException('You are not in a lobby');
     }
-    console.log("moving recieved")
-    client.lobby.clientMove(data);
+    client.lobby.clientMove(client.id, data);
   }
 
   @SubscribeMessage(ClientEvents.GetState)

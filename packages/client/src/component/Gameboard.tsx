@@ -53,6 +53,7 @@ interface TileProps {
 
 export const Gameboard: React.FC<GameboardProps> = (props) => {
   const grid = [];
+  // ratio to view
   const tableWidth = 60;
   for (let y = 0; y < props.height; y++) {
     const row = [];

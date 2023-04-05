@@ -17,6 +17,17 @@ export namespace Payloads {
     height: number
   }
 
+
+  export type LobbyState = {
+    lobbyId: string,
+    gameStarted: boolean,
+    gamePaused: boolean,
+    gameEnded: boolean,
+    playerCount: number,
+    currentPlayer: ClientId,
+    playerStatus: Map<ClientId, PlayerStatus>
+  }
+
   export type ClientMove = {
     type: MoveType,
     x: number,
@@ -30,6 +41,12 @@ export namespace Payloads {
 
 export type TileState = number | 'bomb' | 'blank' | 'hidden' | 'flag';
 export type MoveType = 'flag' | 'middleclick' | 'reveal';
+type ClientId = string;
+export type PlayerStatus = {
+  timeRemaining: number,
+  alive: boolean
+}
+
 // export type[ServerEvents.GameMessage] = {
 //   message: string;
 //   color?: 'green' | 'red' | 'blue' | 'orange';

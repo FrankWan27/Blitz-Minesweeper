@@ -47,6 +47,12 @@ export class SocketManager {
     });
   }
 
+  public onLobbyState(func: (data: Payloads.LobbyState) => void): void {
+    this.socket.on(ServerEvents.LobbyState, (data: Payloads.LobbyState) => {
+      func(data);
+    })
+  }
+
   public onGameStart(func: () => void): void {
     this.socket.on(ServerEvents.GameStart, () => {
       func();
