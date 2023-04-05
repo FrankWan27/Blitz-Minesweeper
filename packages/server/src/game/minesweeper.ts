@@ -21,7 +21,7 @@ export class Minesweeper {
         for (let x = 0; x < this.width; x++) {
             this.board.push([])
             for (let y = 0; y < this.height; y++) {
-                this.board[x][y] = new Tile();
+                this.board[x][y] = new Tile(x, y);
             }
         }
         this.plantBombs(this.board);
@@ -84,7 +84,7 @@ export class Minesweeper {
     }
 
     inBounds(x: number, y: number) : boolean {
-        return x >= 0 && x < this.width && y >0 && y < this.height;
+        return x >= 0 && x < this.width && y >= 0 && y < this.height;
     }
 
     public getGameboardState(_clientId: ClientId) : Payloads.GameboardState  {
@@ -136,11 +136,24 @@ export class Minesweeper {
     executeMove(move: Payloads.ClientMove) : void {
         switch(move.type) {
             case 'reveal':
-                this.board[move.x][move.y].isHidden = false;
+                this.revealTile(move.x, move.y);
                 break;
             default:
                 break;
         }
+    }
+
+    revealTile(x: number, y: number) : void {
+        const tile = this.board[x][y];
+        tile.isHidden = false;
+        if (tile.hint == 0) {
+            this.getNeighbors(this.board, x, y).forEach(neighbor => {
+                if (neighbor.isHidden) {
+                    this.revealTile(neighbor.x, neighbor. y);
+                }
+            });
+        }
+        tile.isHidden = false;
     }
 }
 
@@ -152,4 +165,6 @@ class Tile {
     public isHidden = true;
     public isBomb;
     public hint : number;
+
+    constructor(public x: number, public y: number) {}
 }

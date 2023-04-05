@@ -29,12 +29,11 @@ const Tile: React.FC<TileProps> = (props) => {
     }
     
     return (
-    <td style={{width: '30px', height: '30px'}}>
-        <div 
-        className={'tile' + props.state == 'hidden'? ' hidden' : ' revealed'}
-        onClick={tileClick}>
-            {getText()}
-        </div>
+    <td
+    style={{width: '30px', height: '30px'}}
+    className={'tile' + (props.state == 'hidden' ? ' hidden' : ' revealed')}
+    onClick={tileClick}> 
+        {getText()}
     </td>
     )
 }
