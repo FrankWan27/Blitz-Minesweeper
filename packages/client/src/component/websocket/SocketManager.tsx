@@ -2,10 +2,8 @@ import { io, Socket } from 'socket.io-client';
 // import { ClientEvents, ServerEvents } from '../../shared/index';
 import { ClientEvents, ServerEvents } from '../../shared/Events';
 import { Payloads } from '../../shared/Payloads';
-import GameManager from '../GameManager'
 // @ts-ignore
 import { showNotification } from '@mantine/notifications';
-import React, { useState } from "react";
 
 export class SocketManager {
   public socket: Socket;
@@ -51,7 +49,6 @@ export class SocketManager {
 
   public onGameStart(func: () => void): void {
     this.socket.on(ServerEvents.GameStart, () => {
-      console.log("gamestart")
       func();
     });
   }

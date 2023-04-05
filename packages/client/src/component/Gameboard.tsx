@@ -20,12 +20,10 @@ const Tile: React.FC<TileProps> = (props) => {
     }
   }
   const tileClick = () => {
-    console.log("clicked")
     if (props.state != 'hidden') {
       return;
     }
     sm.move(props.x, props.y);
-    console.log("clicked and hidden")
   }
 
   return (
@@ -64,7 +62,7 @@ export const Gameboard: React.FC<GameboardProps> = (props) => {
     grid.push(<tr key={y}>{row}</tr>);
   }
 
-  return <table style={{width: `${tableWidth}vw`}}>{grid}</table>;
+  return <table style={{width: `${tableWidth}vw`}}><tbody>{grid}</tbody></table>;
 }
 
 export default Gameboard;

@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import socketManager from "./websocket/SocketManager";
 import Gameboard from "./Gameboard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import JoinLobby from "./JoinLobby";
 import { TileState } from "shared/Payloads";
 
@@ -15,25 +15,27 @@ export default function GameManager() {
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
 
-  sm.onJoinLobby((data) => {
-    updateURL(data.lobbyId);
-    setLobby(data.lobbyId);
-  })
+  useEffect(() => {
+    sm.onJoinLobby((data) => {
+      updateURL(data.lobbyId);
+      setLobby(data.lobbyId);
+    })
 
-  sm.onGameboardState((data) => {
-    setBoard(data.tiles);
-    setWidth(data.width);
-    setHeight(data.height);
-    setGameStart(true)
-  })
+    sm.onGameboardState((data) => {
+      setBoard(data.tiles);
+      setWidth(data.width);
+      setHeight(data.height);
+      setGameStart(true)
+    })
 
-  sm.onGameStart(() => {
-    sm.getGameState();
-  })
+    sm.onGameStart(() => {
+      sm.getGameState();
+    })
 
-  const updateURL = (str: string) => {
-    window.history.replaceState("", "", "/" + str);
-  }
+    const updateURL = (str: string) => {
+      window.history.replaceState("", "", "/" + str);
+    }
+  }, []);
 
   return (
     <div className="game">
