@@ -5,7 +5,7 @@ import './Gameboard.css'
 
 const Button = (props: any) => {
     const { children } = props;
-    return <td><div className='btn' style={{width: '30px', height: '30px'}}>{children}</div></td>
+    return <td style={{width: '50px', height: '50px'}}><div className='btn'>{children}</div></td>
 }
 
 class Tile extends React.Component<{state: TileState}> {
