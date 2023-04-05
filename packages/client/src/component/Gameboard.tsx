@@ -1,9 +1,14 @@
-import { Button } from "@mantine/core";
+// import { Button } from "@mantine/core";
 import React from "react";
 import { TileState } from "shared/Payloads";
+import './Gameboard.css'
+
+const Button = (props: any) => {
+    const { children } = props;
+    return <td style={{width: '50px', height: '50px'}}><div className='btn'>{children}</div></td>
+}
 
 class Tile extends React.Component<{state: TileState}> {
-
     constructor(props: { state: TileState; }) {
         super(props);
     }
@@ -34,17 +39,17 @@ interface Props {
 
 export const Gameboard: React.FC<Props> = (props) => {
     const grid = [];
-    console.log(props);
+    // console.log(props);
     
-    for (let x = 0; x < props.width; x++) {
-        const col = [];
-        for (let y = 0; y < props.height; y++) {
-            col.push(<Tile state={props.board[x][y]}key={'${x}-${y}'} />);
+    for (let y = 0; y < props.width; y++) {
+        const row = [];
+        for (let x = 0; x < props.height; x++) {
+            row.push(<Tile state={props.board[x][y]}key={'${x}-${y}'} />);
         }
-        grid.push(<div key={x}>{col}</div>);
+        grid.push(<tr key={y}>{row}</tr>);
     }
 
-    return <div>{grid}</div>;
+    return <table>{grid}</table>;
 }
 
 export default Gameboard;
