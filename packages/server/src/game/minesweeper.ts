@@ -149,7 +149,7 @@ function getRandomInt(max) {
 }
 
 class Tile {
-    public isHidden = true;
+    public isHidden = false;
     public isBomb;
     public hint : number;
 }
