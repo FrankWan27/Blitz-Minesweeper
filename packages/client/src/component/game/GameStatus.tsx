@@ -28,12 +28,14 @@ export const GameStatus: React.FC<GameStatusProps> = (props) => {
   useEffect(() => {
     
   }, [props.lobbyState])
-  return (<div>
-    <Timer lobbyState={props.lobbyState} clientId={props.clientId}/>
-    {/* Number of Players: {props.lobbyState.playerCount}
-    CurrentPlayer: {props.lobbyState.currentPlayer}
-    You are: {props.clientId} */}
-  </div>);
+  return (
+    <div className='status'>
+      <Timer lobbyState={props.lobbyState} clientId={props.clientId}/>
+      {/* Number of Players: {props.lobbyState.playerCount}
+      CurrentPlayer: {props.lobbyState.currentPlayer}
+      You are: {props.clientId} */}
+    </div>
+  );
 }
 
 export type GameStatusProps = {
