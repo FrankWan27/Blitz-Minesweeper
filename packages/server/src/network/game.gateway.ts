@@ -31,8 +31,12 @@ export class GameGateway implements OnGatewayInit {
 
   @SubscribeMessage(ClientEvents.LobbyJoin)
   onLobbyJoin(client: Client, data: Payloads.LobbyId): void {
-    console.log(client.id + " joining lobby ", data)
     this.lobbyManager.joinLobby(client, data.lobbyId);
+  }
+
+  @SubscribeMessage(ClientEvents.LobbyQuickJoin)
+  onClientQuickJoin(client: Client): void {
+    this.lobbyManager.quickJoin(client);
   }
 
   @SubscribeMessage(ClientEvents.Move)
@@ -43,6 +47,11 @@ export class GameGateway implements OnGatewayInit {
     client.lobby.clientMove(client.id, data);
   }
 
+  @SubscribeMessage(ClientEvents.SetName)
+  onClientSetName(client: Client, data: Payloads.Name): void {
+    client.name = data.name;
+  }
+
   @SubscribeMessage(ClientEvents.GetState)
   onClientGetState(client: Client): void {
     if (!client.lobby) {
@@ -51,4 +60,5 @@ export class GameGateway implements OnGatewayInit {
     console.log("recieved request for game state from " + client.id)
     client.lobby.emitGameState(client.id);
   }
+
 }

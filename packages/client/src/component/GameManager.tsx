@@ -1,11 +1,10 @@
-import { io } from "socket.io-client";
 import socketManager from "./websocket/SocketManager";
-import Gameboard from "./Gameboard";
+import Gameboard from "./game/Gameboard";
 import { useEffect, useState } from "react";
 import JoinLobby from "./JoinLobby";
-import { TileState } from "shared/Payloads";
+import { Payloads, TileState } from "shared/Payloads";
+import { GameContainer } from "./game/GameContainer";
 
-const socket = io();
 const sm = socketManager;
 
 export default function GameManager() {
@@ -14,6 +13,7 @@ export default function GameManager() {
   const [board, setBoard] = useState<TileState[][]>([]);
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
+  const [lobbyState, setLobbyState] = useState(defaultLobbyState);
 
   useEffect(() => {
     sm.onJoinLobby((data) => {
@@ -33,7 +33,7 @@ export default function GameManager() {
     })
 
     sm.onLobbyState((data) => {
-      console.log(data);
+      setLobbyState(data);
     })
 
     const updateURL = (str: string) => {
@@ -44,13 +44,17 @@ export default function GameManager() {
   return (
     <div className="game">
       In Lobby: {lobby}
-      {gameStart ? <Gameboard board={board} width={width} height={height} /> : <JoinLobby />}
+      {gameStart ? <GameContainer board={board} width={width} height={height} lobbyState={lobbyState} clientId={sm.getId()}/>: <JoinLobby />}
     </div>
   );
 }
-function timeout(delay: number) {
-  return new Promise(res => setTimeout(res, delay));
+
+const defaultLobbyState : Payloads.LobbyState = {
+  currentPlayer: "N/A",
+  lobbyId: "",
+  gameStarted: false,
+  gamePaused: false,
+  gameEnded: false,
+  playerCount: 0,
+  playerStatus: {}
 }
-
-
-

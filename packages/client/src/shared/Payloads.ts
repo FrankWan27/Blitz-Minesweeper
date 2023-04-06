@@ -25,7 +25,7 @@ export namespace Payloads {
     gameEnded: boolean,
     playerCount: number,
     currentPlayer: ClientId,
-    playerStatus: Map<ClientId, PlayerStatus>
+    playerStatus: PlayerStatusMap
   }
 
   export type ClientMove = {
@@ -37,11 +37,20 @@ export namespace Payloads {
   export type ServerException = {
     message: string
   }
+
+  export type Name = {
+    name: string
+  }
 }
 
 export type TileState = number | 'bomb' | 'blank' | 'hidden' | 'flag';
 export type MoveType = 'flag' | 'middleclick' | 'reveal';
-type ClientId = string;
+export type ClientId = string;
+
+export type PlayerStatusMap = {
+  [clientId: ClientId] : PlayerStatus
+}
+
 export type PlayerStatus = {
   timeRemaining: number,
   alive: boolean

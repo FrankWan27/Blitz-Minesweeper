@@ -2,7 +2,7 @@
 import React from "react";
 import { TileState } from "shared/Payloads";
 import "./Gameboard.css"
-import socketManager from "./websocket/SocketManager";
+import socketManager from "../websocket/SocketManager";
 
 const sm = socketManager;
 const Tile: React.FC<TileProps> = (props) => {
@@ -38,7 +38,7 @@ const Tile: React.FC<TileProps> = (props) => {
   )
 }
 
-interface GameboardProps {
+export interface GameboardProps {
   board: TileState[][],
   width: number,
   height: number,

@@ -9,10 +9,13 @@ export enum ServerEvents {
   GameboardState = 'server.gameboard.state',
 }
 
+
 export const enum ClientEvents {
   LobbyCreate = 'client.lobby.create',
   LobbyJoin = 'client.lobby.join',
   LobbyLeave = 'client.lobby.leave',
+  LobbyQuickJoin = "client.lobby.quickjoin",
   Move = 'client.game.move',
   GetState = 'client.game.state',
+  SetName = 'client.name.set',
 }

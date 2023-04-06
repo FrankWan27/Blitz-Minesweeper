@@ -83,6 +83,10 @@ export class SocketManager {
     this.socket.emit(ClientEvents.LobbyJoin, { lobbyId })
   }
 
+  public quickJoin(): void {
+    this.socket.emit(ClientEvents.LobbyQuickJoin);
+  }
+
   public createLobby() {
     this.socket.emit(ClientEvents.LobbyCreate)
   }
@@ -93,6 +97,14 @@ export class SocketManager {
 
   public move(x: number, y: number) {
     this.socket.emit(ClientEvents.Move, { type: 'reveal', x, y })
+  }
+
+  public getId() : string {
+    return this.socket.id;
+  }
+
+  public setName(name: string) {
+    this.socket.emit(ClientEvents.SetName, { name })
   }
 }
 

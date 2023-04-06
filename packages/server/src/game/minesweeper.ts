@@ -1,5 +1,4 @@
-import { Payloads, TileState } from '@shared/Payloads';
-import { ClientId } from 'network/client';
+import { ClientId, Payloads, TileState } from '@shared/Payloads';
 import { Lobby } from 'network/lobby';
 
 export class Minesweeper {
@@ -133,27 +132,30 @@ export class Minesweeper {
     return true;
   }
 
-  executeMove(move: Payloads.ClientMove): void {
+  executeMove(clientId: ClientId, move: Payloads.ClientMove): void {
     switch (move.type) {
       case 'reveal':
-        this.revealTile(move.x, move.y);
+        this.revealTile(clientId, move.x, move.y);
         break;
       default:
         break;
     }
   }
 
-  revealTile(x: number, y: number): void {
+  revealTile(clientId: ClientId, x: number, y: number): void {
     const tile = this.board[x][y];
     tile.isHidden = false;
-    if (tile.hint == 0) {
+    if (tile.hint == 0 && !tile.isBomb) {
       this.getNeighbors(this.board, x, y).forEach(neighbor => {
         if (neighbor.isHidden) {
-          this.revealTile(neighbor.x, neighbor.y);
+          this.revealTile(clientId, neighbor.x, neighbor.y);
         }
       });
     }
     tile.isHidden = false;
+    if (tile.isBomb) {
+      this.lobby.bomb(clientId);
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 import { nanoid } from "nanoid"
 import { Server } from "socket.io"
-import { Client, ClientId } from "./client";
+import { Client } from "./client";
 import { Minesweeper } from "game/minesweeper";
 import { ServerEvents } from "@shared/Events";
-import { Payloads, PlayerStatus } from "@shared/Payloads";
+import { ClientId, Payloads, PlayerStatus } from "@shared/Payloads";
 import { ServerException } from "./server.exception";
 import { TurnTimer } from "game/turnTimer";
 
@@ -20,7 +20,7 @@ export class Lobby {
 
   private readonly game: Minesweeper = new Minesweeper(this, 16, 16, 40);
 
-  private readonly maxClients = 2;
+  public readonly maxClients = 2;
 
   private readonly turnTimer = new TurnTimer(this);
 
@@ -54,7 +54,7 @@ export class Lobby {
     if (!this.game.validateMove(move)) {
       return;
     }
-    this.game.executeMove(move);
+    this.game.executeMove(clientId, move);
     this.turnTimer.nextPlayer();
     this.emitGameState();
   }
@@ -81,9 +81,9 @@ export class Lobby {
   }
 
   private getLobbyState() : Payloads.LobbyState{
-    const playerStatus = new Map<ClientId, PlayerStatus>();
+    const playerStatus = {}
     this.turnTimer.playerStatus.forEach((player, clientId) => {
-      playerStatus.set(clientId, {alive: player.alive, timeRemaining: player.timeRemaining})
+      playerStatus[clientId] = {alive: player.alive, timeRemaining: player.timeRemaining};
     })
     return {
       lobbyId: this.id,
@@ -98,6 +98,7 @@ export class Lobby {
 
   public emitGameStart() {
     this.clients.forEach(client => {
+      console.log(client.name, client.id);
       client.emit(ServerEvents.GameStart);
     });
   }
@@ -105,6 +106,10 @@ export class Lobby {
   public gameOver(clientId: ClientId) {
     console.log("GAMEOVER WINNER IS ", clientId)
     this.gameEnded = true;
+  }
+
+  public bomb(clientId: ClientId) {
+    this.turnTimer.bomb(clientId);
   }
 }
 

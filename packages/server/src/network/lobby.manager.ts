@@ -18,6 +18,16 @@ export class LobbyManager {
     return lobby;
   }
 
+  public quickJoin(client: Client) {
+    this.lobbies.forEach((lobby) => {
+      if (lobby.clients.size < lobby.maxClients) {
+        this.joinLobby(client, lobby.id);
+        return;
+      }
+    })
+    throw new ServerException("There are currently no open lobbies! Please try again later")
+  }
+
   public joinLobby(client: Client, lobbyId: LobbyId): void {
     const lobby = this.lobbies.get(lobbyId);
     if (!lobby) {
