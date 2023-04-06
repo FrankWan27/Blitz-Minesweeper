@@ -5,6 +5,7 @@ import { Socket } from 'socket.io';
 import { LobbyManager } from './lobby.manager';
 import { Client } from './client';
 import { ServerException } from './server.exception';
+import { getRandomName } from '@shared/Utils';
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit {
@@ -49,7 +50,11 @@ export class GameGateway implements OnGatewayInit {
 
   @SubscribeMessage(ClientEvents.SetName)
   onClientSetName(client: Client, data: Payloads.Name): void {
-    client.name = data.name;
+    if (data.name == "") {
+      client.name = getRandomName();
+    } else {
+      client.name = data.name;
+    }
   }
 
   @SubscribeMessage(ClientEvents.GetState)

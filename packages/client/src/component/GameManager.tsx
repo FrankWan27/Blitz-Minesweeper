@@ -1,14 +1,15 @@
 import socketManager from "./websocket/SocketManager";
 import Gameboard from "./game/Gameboard";
 import { useEffect, useState } from "react";
-import JoinLobby from "./JoinLobby";
+import JoinLobby from "./lobby/JoinLobby";
 import { Payloads, TileState } from "shared/Payloads";
 import { GameContainer } from "./game/GameContainer";
+import Lobby from "./lobby/Lobby";
 
 const sm = socketManager;
 
 export default function GameManager() {
-  const [lobby, setLobby] = useState("");
+  const [lobbyId, setLobbyId] = useState("");
   const [gameStart, setGameStart] = useState(false);
   const [board, setBoard] = useState<TileState[][]>([]);
   const [width, setWidth] = useState(1);
@@ -18,7 +19,7 @@ export default function GameManager() {
   useEffect(() => {
     sm.onJoinLobby((data) => {
       updateURL(data.lobbyId);
-      setLobby(data.lobbyId);
+      setLobbyId(data.lobbyId);
     })
 
     sm.onGameboardState((data) => {
@@ -43,8 +44,8 @@ export default function GameManager() {
 
   return (
     <div className="game">
-      In Lobby: {lobby}
-      {gameStart ? <GameContainer board={board} width={width} height={height} lobbyState={lobbyState} clientId={sm.getId()}/>: <JoinLobby />}
+      In Lobby: {lobbyId}
+      {gameStart ? <GameContainer board={board} width={width} height={height} lobbyState={lobbyState} clientId={sm.getId()}/>: <Lobby lobbyId={lobbyId} setLobbyId={setLobbyId} lobbyState={lobbyState}/>}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Lobby, LobbyId } from "./lobby";
 import { Client } from "./client";
 import { ServerEvents } from "@shared/Events";
 import { ServerException } from "./server.exception";
+import { getRandomName } from "@shared/Utils";
 
 export class LobbyManager {
   public server: Server;
@@ -40,6 +41,7 @@ export class LobbyManager {
 
   public initializeSocket(client: Client) {
     client.lobby = null;
+    client.name = getRandomName();
   }
 
   public terminateSocket(client: Client) {

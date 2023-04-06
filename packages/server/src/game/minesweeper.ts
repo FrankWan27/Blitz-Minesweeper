@@ -1,4 +1,5 @@
 import { ClientId, Payloads, TileState } from '@shared/Payloads';
+import { getRandomInt } from '@shared/Utils';
 import { Lobby } from 'network/lobby';
 
 export class Minesweeper {
@@ -159,9 +160,7 @@ export class Minesweeper {
   }
 }
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
+
 
 class Tile {
   public isHidden = true;

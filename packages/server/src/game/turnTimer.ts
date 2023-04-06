@@ -1,4 +1,5 @@
 import { ClientId } from "@shared/Payloads";
+import { getRandomInt } from "@shared/Utils";
 import { Lobby } from "network/lobby";
 
 interface PlayerStatus {
@@ -28,7 +29,7 @@ export class TurnTimer {
       this.playerStatus.set(client.id, {alive: true, timeout: null, lastMove: null, timeRemaining: BASE_TIME})
     })
     this.clientIdArray = Array.from(this.lobby.clients.keys());
-    this.currentPlayer = this.clientIdArray[Math.floor(Math.random() * this.clientIdArray.length)];
+    this.currentPlayer = this.clientIdArray[getRandomInt(this.clientIdArray.length)];
   }
 
   isCurrentPlayer(clientId: string) {
@@ -54,8 +55,14 @@ export class TurnTimer {
   }
 
   bomb(clientId: ClientId) {
-    this.playerStatus.get(clientId).timeRemaining -= BOMB_PENALTY;
+    const player = this.playerStatus.get(clientId);
+    player.timeRemaining -= BOMB_PENALTY;
+    if(player.timeRemaining <= 0) {
+      player.alive = false;
+      this.checkGameOver();
+    }
   }
+
   updatePlayerStatus(date: number) {
     const curStatus = this.playerStatus.get(this.currentPlayer);
     if (curStatus.timeout) {
