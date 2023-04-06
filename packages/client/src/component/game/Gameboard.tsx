@@ -1,7 +1,7 @@
 import React from "react";
 import { TileState } from "shared/Payloads";
-import "./Gameboard.css"
 import socketManager from "../websocket/SocketManager";
+import { Grid } from '@mantine/core';
 
 const sm = socketManager;
 const Tile: React.FC<TileProps> = (props) => {
@@ -24,13 +24,11 @@ const Tile: React.FC<TileProps> = (props) => {
     sm.move(props.x, props.y);
   }
 
-  return (<td>
-    <div
-      className={`tile ${props.state === 'hidden' ? 'hidden' : 'revealed'}`}
-      onClick={tileClick} >
-      {getText()}
-    </div>
-  </td>)
+  return (
+    <Grid.Col span={1} onClick={tileClick} >
+      <div className={`tile ${props.state === 'hidden' ? 'hidden' : 'revealed'}`}>{getText()}</div>
+    </Grid.Col>
+  )
 }
 
 export interface GameboardProps {
@@ -47,16 +45,15 @@ interface TileProps {
 
 export const Gameboard: React.FC<GameboardProps> = (props) => {
   const grid = [];
+  const rowSize = 16;
 
   for (let y = 0; y < props.height; y++) {
-    const row = [];
     for (let x = 0; x < props.width; x++) {
-      row.push(<Tile state={props.board[x][y]} x={x} y={y} key={`${x}-${y}`} />);
+      grid.push(<Tile state={props.board[x][y]} x={x} y={y} key={`${x}-${y}`} />);
     }
-    grid.push(<tr key={y}>{row}</tr>);
   }
 
-  return <table className='board'><tbody>{grid}</tbody></table>;
+  return <Grid className='board' gutter={4} columns={rowSize}>{grid}</Grid>
 }
 
 export default Gameboard;

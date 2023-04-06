@@ -1,0 +1,87 @@
+.container {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 10px;
+}
+
+.board {
+  flex: 4;
+  background-color: #c0ffee;
+  padding: 5px;
+}
+
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  transition: filter .4s linear;
+}
+
+.hidden {
+  background-color: rgb(69, 69, 69);
+}
+
+.hidden:hover {
+  filter: brightness(.8);
+}
+
+.revealed {
+  background-color: white;
+  color: rgb(69, 69, 69);
+}
+
+.revealed:hover {
+  filter: brightness(.9);
+}
+
+.status {
+  flex: 1;
+}
+
+.timer {
+  display: flex;
+  padding: 5px;
+  gap: 10px;
+}
+
+.active {
+  outline: solid;
+}
+
+@media (max-width: 480px) {
+  .container {
+    flex-direction: column;
+    width: 480px;
+  }
+}
+
+@media (min-width: 481px) {
+  .container {
+    flex-direction: column;
+    width: 740px;
+  }
+}
+
+@media (min-width: 769px) {
+  .container {
+    flex-direction: row;
+    width: 980px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .container {
+    width: 1100px;
+  }
+}
+
+@media (min-width: 1201px) {
+  .container {
+    width: 1200px;
+    gap: 20px;
+  }
+}
