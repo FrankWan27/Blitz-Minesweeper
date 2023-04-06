@@ -17,7 +17,9 @@ const Timer: React.FC<TimerProps> = (props) => {
   }
   return (<div>
     {showTime(time)}
+    <br/>
     CurrentPlayer: {props.lobbyState.clientNames[props.lobbyState.currentPlayer]}
+    <br/>
     You are: {props.lobbyState.clientNames[props.clientId]} and it is {active ? "":"NOT"} your turn
     </div>)
 }
