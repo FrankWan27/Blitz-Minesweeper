@@ -1,6 +1,4 @@
-import { useScrollIntoView } from "@mantine/hooks";
 import React, { useEffect, useState } from "react";
-import { useImperativeHandle } from "react";
 import { ClientId, Payloads } from "shared/Payloads";
 import './GameStatus.css'
 

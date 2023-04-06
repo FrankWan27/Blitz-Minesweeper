@@ -1,7 +1,5 @@
 import socketManager from "./websocket/SocketManager";
-import Gameboard from "./game/Gameboard";
 import { useEffect, useState } from "react";
-import JoinLobby from "./lobby/JoinLobby";
 import { Payloads, TileState } from "shared/Payloads";
 import { GameContainer } from "./game/GameContainer";
 import Lobby from "./lobby/Lobby";

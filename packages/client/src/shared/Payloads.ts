@@ -1,5 +1,3 @@
-import { ServerEvents } from "./Events"
-
 export namespace Payloads {
   export type LobbyId = {
     lobbyId: string;
