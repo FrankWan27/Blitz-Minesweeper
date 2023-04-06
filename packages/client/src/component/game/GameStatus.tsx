@@ -2,6 +2,7 @@ import { useScrollIntoView } from "@mantine/hooks";
 import React, { useEffect, useState } from "react";
 import { useImperativeHandle } from "react";
 import { ClientId, Payloads } from "shared/Payloads";
+import './GameStatus.css'
 
 const Timer: React.FC<TimerProps> = (props) => {
   const[time, setTime] = useState(30 * 1000);
@@ -15,24 +16,17 @@ const Timer: React.FC<TimerProps> = (props) => {
     let sec = ms / 1000;
     return sec.toFixed(1);
   }
-  return (<div>
-    {showTime(time)}
-    <br/>
-    CurrentPlayer: {props.lobbyState.clientNames[props.lobbyState.currentPlayer]}
-    <br/>
-    You are: {props.lobbyState.clientNames[props.clientId]} and it is {active ? "":"NOT"} your turn
-    </div>)
+  return (<div className={active ? "active" : ""}><div> {showTime(time)} </div>{props.lobbyState.clientNames[props.clientId]} {props.isPlayer? "(You)":""}</div>)
 }
 
 export const GameStatus: React.FC<GameStatusProps> = (props) => {
-  useEffect(() => {
-    
-  }, [props.lobbyState])
+  const timers = []
+  for (const clientId of Object.keys(props.lobbyState.clientNames)) {
+    timers.push(<Timer lobbyState={props.lobbyState} clientId={clientId} isPlayer={clientId == props.clientId}/>)
+  }
+
   return (<div>
-    <Timer lobbyState={props.lobbyState} clientId={props.clientId}/>
-    {/* Number of Players: {props.lobbyState.playerCount}
-    CurrentPlayer: {props.lobbyState.currentPlayer}
-    You are: {props.clientId} */}
+    {timers}
   </div>);
 }
 
@@ -43,5 +37,6 @@ export type GameStatusProps = {
 
 type TimerProps = {
   clientId: ClientId;
+  isPlayer: boolean;
   lobbyState: Payloads.LobbyState;
 }
