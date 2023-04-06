@@ -20,7 +20,7 @@ const Tile: React.FC<TileProps> = (props) => {
   }
 
   const tileClick = () => {
-    if (props.state != 'hidden') return;
+    if (props.state !== 'hidden') return;
     sm.move(props.x, props.y);
   }
 
