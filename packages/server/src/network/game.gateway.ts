@@ -57,13 +57,20 @@ export class GameGateway implements OnGatewayInit {
     }
   }
 
-  @SubscribeMessage(ClientEvents.GetState)
-  onClientGetState(client: Client): void {
+  @SubscribeMessage(ClientEvents.GetGameState)
+  onClientGetGameState(client: Client): void {
     if (!client.lobby) {
       throw new ServerException('You are not in a lobby');
     }
-    console.log("recieved request for game state from " + client.id)
     client.lobby.emitGameState(client.id);
+  }
+
+  @SubscribeMessage(ClientEvents.GetGameState)
+  onClientGetLobbyState(client: Client): void {
+    if (!client.lobby) {
+      throw new ServerException('You are not in a lobby');
+    }
+    client.lobby.emitLobbyState(client.id);
   }
 
 }

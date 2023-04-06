@@ -10,7 +10,7 @@ import { TurnTimer } from "game/turnTimer";
 export class Lobby {
   public readonly id: LobbyId = nanoid(5);
 
-  public readonly createdAt: Date = new Date();
+  public readonly createdAt: number = Date.now();
 
   public readonly clients: Map<ClientId, Client> = new Map<ClientId, Client>();
 
@@ -31,9 +31,13 @@ export class Lobby {
     if (client.lobby != null) {
       throw new ServerException("You are already in a lobby!")
     }
+    if (this.gameStarted) {
+      throw new ServerException("This lobby already has a game in progress!")
+    }
     this.clients.set(client.id, client);
     client.join(this.id);
     client.lobby = this;
+    this.emitLobbyState();
     if (this.clients.size >= this.maxClients) {
       this.gameStarted = true;
       this.game.startGame();
@@ -45,6 +49,7 @@ export class Lobby {
     this.clients.delete(client.id);
     client.leave(this.id);
     client.lobby = null;
+    this.broadcast(client.name + " has left the game!", 'orange');
   }
 
   public clientMove(clientId: ClientId, move: Payloads.ClientMove) {
@@ -85,12 +90,17 @@ export class Lobby {
     this.turnTimer.playerStatus.forEach((player, clientId) => {
       playerStatus[clientId] = {alive: player.alive, timeRemaining: player.timeRemaining};
     })
+    const clientNames = {}
+    this.clients.forEach((client, clientId) => {
+      clientNames[clientId] = client.name;
+    })
     return {
       lobbyId: this.id,
       gameStarted: this.gameStarted,
       gamePaused: this.gamePaused,
       gameEnded: this.gameEnded,
       playerCount: this.clients.size,
+      clientNames: clientNames,
       currentPlayer: this.turnTimer.currentPlayer,
       playerStatus: playerStatus,
     }
@@ -110,6 +120,17 @@ export class Lobby {
 
   public bomb(clientId: ClientId) {
     this.turnTimer.bomb(clientId);
+  }
+
+  public broadcast(message: string, color?: string) {
+    const data: Payloads.ServerMessage = {
+      message,
+      color
+    }
+
+    this.clients.forEach(client => {
+      client.emit(ServerEvents.ServerMessage, data);
+    });
   }
 }
 

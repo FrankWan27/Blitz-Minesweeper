@@ -4,7 +4,9 @@ import { Client } from "./client";
 import { ServerEvents } from "@shared/Events";
 import { ServerException } from "./server.exception";
 import { getRandomName } from "@shared/Utils";
+import { Cron } from "@nestjs/schedule";
 
+const LOBBY_MAX_LIFETIME = 60 * 60 * 1000; // one hour
 export class LobbyManager {
   public server: Server;
   private readonly lobbies: Map<LobbyId, Lobby> = new Map<LobbyId, Lobby>();
@@ -21,12 +23,12 @@ export class LobbyManager {
 
   public quickJoin(client: Client) {
     this.lobbies.forEach((lobby) => {
-      if (lobby.clients.size < lobby.maxClients) {
+      if (lobby.clients.size < lobby.maxClients && lobby.gameStarted == false) {
         this.joinLobby(client, lobby.id);
         return;
       }
     })
-    throw new ServerException("There are currently no open lobbies! Please try again later")
+    throw new ServerException("There are currently no open lobbies! Please try again later", "orange");
   }
 
   public joinLobby(client: Client, lobbyId: LobbyId): void {
@@ -46,5 +48,23 @@ export class LobbyManager {
 
   public terminateSocket(client: Client) {
     client.lobby?.removeClient(client);
+  }
+
+  // Periodically clean up lobbies
+  @Cron('*/5 * * * *')
+  private cleanLobbies(): void
+  {
+    for (const [lobbyId, lobby] of this.lobbies) {
+      const now = Date.now();
+      const lobbyLifetime = now - lobby.createdAt;
+
+      if (lobbyLifetime > LOBBY_MAX_LIFETIME) {
+        lobby.broadcast('Game timed out', 'blue');
+        this.lobbies.delete(lobby.id);
+      }
+      if (lobby.clients.size == 0) {
+        this.lobbies.delete(lobby.id);
+      }
+    }
   }
 }

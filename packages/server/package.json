@@ -24,6 +24,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^9.3.12",
+    "@nestjs/schedule": "^2.2.1",
     "@nestjs/websockets": "^9.3.12",
     "express": "^4.18.2",
     "nanoid": "3.3.4",

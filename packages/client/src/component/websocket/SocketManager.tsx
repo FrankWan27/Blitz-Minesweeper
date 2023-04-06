@@ -14,6 +14,7 @@ export class SocketManager {
     this.onConnect();
     this.onDisconnect();
     this.onException();
+    this.onMessage();
   }
 
   private onConnect(): void {
@@ -23,7 +24,7 @@ export class SocketManager {
         showNotification({
           message: 'Reconnected to server!',
           color: 'green',
-          autoClose: 2000,
+          autoClose: 3000,
         });
         this.connected = true;
       }
@@ -32,7 +33,31 @@ export class SocketManager {
 
   private onDisconnect(): void {
     this.socket.on('disconnect', () => {
+      this.connected = false;
+      showNotification({
+        message: 'Connection lost to the server',
+        color: 'orange',
+        autoClose: 3000,
+      });
     });
+  }
+
+  public onException(): void {
+    this.socket.on(ServerEvents.Exception, (data: Payloads.ServerException) => {
+      showNotification({
+        message: data.message,
+        color: data.color || 'red',
+      })
+    })
+  }
+
+  public onMessage(): void {
+    this.socket.on(ServerEvents.ServerMessage, (data: Payloads.ServerException) => {
+      showNotification({
+        message: data.message,
+        color: data.color || 'blue',
+      })
+    })
   }
 
   public onGameboardUpdate(func: (data: Payloads.GameboardTileUpdate) => void): void {
@@ -70,15 +95,6 @@ export class SocketManager {
     })
   }
 
-  public onException(): void {
-    this.socket.on(ServerEvents.Exception, (data: Payloads.ServerException) => {
-      showNotification({
-        message: data.message,
-        color: 'red',
-      })
-    })
-  }
-
   public joinLobby(lobbyId: string) {
     this.socket.emit(ClientEvents.LobbyJoin, { lobbyId })
   }
@@ -92,7 +108,7 @@ export class SocketManager {
   }
 
   public getGameState() {
-    this.socket.emit(ClientEvents.GetState)
+    this.socket.emit(ClientEvents.GetGameState)
   }
 
   public move(x: number, y: number) {
@@ -109,5 +125,5 @@ export class SocketManager {
 }
 
 
-const socketManager = Object.freeze(new SocketManager());
+const socketManager = new SocketManager();
 export default socketManager;

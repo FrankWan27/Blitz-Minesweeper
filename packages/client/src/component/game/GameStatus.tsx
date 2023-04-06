@@ -6,7 +6,6 @@ import { ClientId, Payloads } from "shared/Payloads";
 const Timer: React.FC<TimerProps> = (props) => {
   const[time, setTime] = useState(30 * 1000);
   const[active, setActive] = useState(false);
-  const[timer, setTimer] = useState(setInterval(() => {}));
   useEffect(() => {
     setActive(props.lobbyState.currentPlayer == props.clientId);
     setTime(props.lobbyState.playerStatus[props.clientId].timeRemaining);
@@ -18,8 +17,8 @@ const Timer: React.FC<TimerProps> = (props) => {
   }
   return (<div>
     {showTime(time)}
-    CurrentPlayer: {props.lobbyState.currentPlayer}
-    You are: {props.clientId} and it is {active ? "":"NOT"} your turn
+    CurrentPlayer: {props.lobbyState.clientNames[props.lobbyState.currentPlayer]}
+    You are: {props.lobbyState.clientNames[props.clientId]} and it is {active ? "":"NOT"} your turn
     </div>)
 }
 

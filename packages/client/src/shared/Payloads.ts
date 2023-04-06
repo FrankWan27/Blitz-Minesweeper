@@ -24,6 +24,7 @@ export namespace Payloads {
     gamePaused: boolean,
     gameEnded: boolean,
     playerCount: number,
+    clientNames: ClientNamesMap,
     currentPlayer: ClientId,
     playerStatus: PlayerStatusMap
   }
@@ -35,6 +36,12 @@ export namespace Payloads {
   }
 
   export type ServerException = {
+    color?: string,
+    message: string
+  }
+
+  export type ServerMessage = {
+    color?: string,
     message: string
   }
 
@@ -49,6 +56,9 @@ export type ClientId = string;
 
 export type PlayerStatusMap = {
   [clientId: ClientId] : PlayerStatus
+}
+export type ClientNamesMap = {
+  [clientId: ClientId] : string
 }
 
 export type PlayerStatus = {
