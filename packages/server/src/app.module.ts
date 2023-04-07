@@ -11,7 +11,7 @@ import { join } from 'path';
       rootPath: join(__dirname, '../../', 'build'),
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}
