@@ -5,9 +5,9 @@ const Timer: React.FC<TimerProps> = (props) => {
   const[time, setTime] = useState(30 * 1000);
   const[active, setActive] = useState(false);
   useEffect(() => {
-    setActive(props.lobbyState.currentPlayer == props.clientId);
+    setActive(props.lobbyState.currentPlayer === props.clientId);
     setTime(props.lobbyState.playerStatus[props.clientId].timeRemaining);
-  }, [props.lobbyState])
+  }, [props.lobbyState, props.clientId])
 
   const showTime = (ms: number) => {
     let sec = ms / 1000;
@@ -24,7 +24,7 @@ const Timer: React.FC<TimerProps> = (props) => {
 export const GameStatus: React.FC<GameStatusProps> = (props) => {
   const timers = []
   for (const clientId of Object.keys(props.lobbyState.clientNames)) {
-    timers.push(<Timer lobbyState={props.lobbyState} clientId={clientId} isPlayer={clientId == props.clientId}/>)
+    timers.push(<Timer lobbyState={props.lobbyState} clientId={clientId} isPlayer={clientId === props.clientId}/>)
   }
 
   return (<div className="status">{timers}</div>);

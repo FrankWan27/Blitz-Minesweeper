@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import socketManager from '../websocket/SocketManager';
 import { useLocation } from 'react-router-dom';
 import { Button, Modal, TextInput } from '@mantine/core';
@@ -8,6 +8,10 @@ const JoinLobby: React.FC<JoinLobbyProps> = (props) => {
   const [name, setName] = useState("");
   const [joinLobby, setJoinLobby] = useState("");
   const [opened, { open, close }] = useDisclosure(false);
+
+  useEffect(() => {
+    sm.setName(name);
+  }, [name])
 
   let lobbyFromUrl = useLocation().pathname.substring(1);
   if (lobbyFromUrl) {

@@ -1,4 +1,4 @@
-import { Button, NativeSelect, Select } from '@mantine/core';
+import { Button, Select } from '@mantine/core';
 import socketManager from 'component/websocket/SocketManager';
 import React, { useEffect, useState } from 'react';
 import { Payloads } from 'shared/Payloads';
@@ -17,14 +17,14 @@ const PlayerList: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
   
   useEffect(() => {
     sm.changeMaxPlayers(props.lobbyState.lobbyId, maxPlayers)
-  }, [maxPlayers])
+  }, [maxPlayers, props.lobbyState.lobbyId])
 
   useEffect(() => {
     setMaxPlayers(props.lobbyState.maxPlayers);
   }, [props.lobbyState.maxPlayers])
 
   const playerList = []
-  for (const [clientId, name] of Object.entries(props.lobbyState.clientNames)) {
+  for (const [_clientId, name] of Object.entries(props.lobbyState.clientNames)) {
     playerList.push(<><Player name={name}/><br/></>)
   }
   while (playerList.length < maxPlayers) {
