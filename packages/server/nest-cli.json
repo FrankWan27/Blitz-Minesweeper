@@ -4,6 +4,9 @@
   "sourceRoot": "src",
   "entryFile": "server/src/main",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "assets": [
+      {"include": "../../client/build/", "outDir": "./dist/build/"}
+    ]
   }
 }

@@ -14,6 +14,10 @@ export class SocketManager {
     this.onException();
     this.onMessage();
   }
+  
+  public getId() : string {
+    return this.socket.id;
+  }
 
   private onConnect(): void {
     this.socket.on('connect', () => {
@@ -113,8 +117,8 @@ export class SocketManager {
     this.socket.emit(ClientEvents.Move, { type: 'reveal', x, y })
   }
 
-  public getId() : string {
-    return this.socket.id;
+  public changeMaxPlayers(lobbyId: string, maxSize: number) {
+    this.socket.emit(ClientEvents.LobbySize, {lobbyId, maxSize})
   }
 
   public setName(name: string) {

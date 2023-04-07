@@ -22,6 +22,7 @@ export namespace Payloads {
     gamePaused: boolean,
     gameEnded: boolean,
     playerCount: number,
+    maxPlayers: number,
     clientNames: ClientNamesMap,
     currentPlayer: ClientId,
     playerStatus: PlayerStatusMap
@@ -31,6 +32,11 @@ export namespace Payloads {
     type: MoveType,
     x: number,
     y: number
+  }
+
+  export type LobbyChangeSize = {
+    lobbyId: string,
+    maxSize: number
   }
 
   export type ServerException = {

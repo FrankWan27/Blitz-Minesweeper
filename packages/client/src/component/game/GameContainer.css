@@ -34,10 +34,6 @@
   color: rgb(69, 69, 69);
 }
 
-.revealed:hover {
-  filter: brightness(.9);
-}
-
 .status {
   flex: 1;
 }

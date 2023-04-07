@@ -14,6 +14,7 @@ export const enum ClientEvents {
   LobbyJoin = 'client.lobby.join',
   LobbyLeave = 'client.lobby.leave',
   LobbyQuickJoin = "client.lobby.quickjoin",
+  LobbySize = 'client.lobby.size',
   Move = 'client.game.move',
   GetGameState = 'client.game.state',
   GetLobbyState = 'client.lobby.state',

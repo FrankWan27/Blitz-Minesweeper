@@ -4,10 +4,11 @@ import { Lobby } from 'network/lobby';
 
 export class Minesweeper {
   private board: Tile[][];
-  constructor(private readonly lobby: Lobby,
+  constructor(
+    private readonly lobby: Lobby,
     private width,
     private height,
-    private bombs
+    private bombs,
   ) {
     this.initializeBoard();
   }
@@ -19,7 +20,7 @@ export class Minesweeper {
   initializeBoard() {
     this.board = [];
     for (let x = 0; x < this.width; x++) {
-      this.board.push([])
+      this.board.push([]);
       for (let y = 0; y < this.height; y++) {
         this.board[x][y] = new Tile(x, y);
       }
@@ -44,7 +45,7 @@ export class Minesweeper {
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
         let bombs = 0;
-        this.getNeighbors(board, x, y).map(tile => {
+        this.getNeighbors(board, x, y).map((tile) => {
           if (tile.isBomb) {
             bombs++;
           }
@@ -88,9 +89,9 @@ export class Minesweeper {
   }
 
   public getGameboardState(_clientId: ClientId): Payloads.GameboardState {
-    const state = []
+    const state = [];
     for (let x = 0; x < this.width; x++) {
-      state.push([])
+      state.push([]);
       for (let y = 0; y < this.height; y++) {
         state[x][y] = this.tileToTileState(this.board[x][y]);
       }
@@ -147,7 +148,7 @@ export class Minesweeper {
     const tile = this.board[x][y];
     tile.isHidden = false;
     if (tile.hint == 0 && !tile.isBomb) {
-      this.getNeighbors(this.board, x, y).forEach(neighbor => {
+      this.getNeighbors(this.board, x, y).forEach((neighbor) => {
         if (neighbor.isHidden) {
           this.revealTile(clientId, neighbor.x, neighbor.y);
         }
@@ -160,12 +161,10 @@ export class Minesweeper {
   }
 }
 
-
-
 class Tile {
   public isHidden = true;
   public isBomb;
   public hint: number;
 
-  constructor(public x: number, public y: number) { }
+  constructor(public x: number, public y: number) {}
 }

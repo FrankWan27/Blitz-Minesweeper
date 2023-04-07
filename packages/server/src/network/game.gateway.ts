@@ -1,4 +1,8 @@
-import { OnGatewayInit, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import {
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+} from '@nestjs/websockets';
 import { ClientEvents, ServerEvents } from '@shared/Events';
 import { Payloads } from '@shared/Payloads';
 import { Socket } from 'socket.io';
@@ -9,12 +13,11 @@ import { getRandomName } from '@shared/Utils';
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit {
-
-  constructor(private readonly lobbyManager: LobbyManager) { }
+  constructor(private readonly lobbyManager: LobbyManager) {}
 
   afterInit(server: any): any {
     this.lobbyManager.server = server;
-    console.log("Game server initialized");
+    console.log('Game server initialized');
   }
 
   async handleConnection(socket: Socket, ...args: any[]) {
@@ -50,7 +53,7 @@ export class GameGateway implements OnGatewayInit {
 
   @SubscribeMessage(ClientEvents.SetName)
   onClientSetName(client: Client, data: Payloads.Name): void {
-    if (data.name == "") {
+    if (data.name == '') {
       client.name = getRandomName();
     } else {
       client.name = data.name;
@@ -65,12 +68,13 @@ export class GameGateway implements OnGatewayInit {
     client.lobby.emitGameState(client.id);
   }
 
-  @SubscribeMessage(ClientEvents.GetGameState)
-  onClientGetLobbyState(client: Client): void {
-    if (!client.lobby) {
-      throw new ServerException('You are not in a lobby');
+  @SubscribeMessage(ClientEvents.LobbySize)
+  onClientLobbySize(client: Client, data: Payloads.LobbyChangeSize): void {
+    if (client.lobby.id != data.lobbyId) {
+      throw new ServerException(
+        'You are not in the lobby you are trying to change settings for',
+      );
     }
-    client.lobby.emitLobbyState(client.id);
+    client.lobby.setMaxClients(data.maxSize);
   }
-
 }
