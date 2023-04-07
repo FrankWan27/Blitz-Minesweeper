@@ -24,7 +24,7 @@ const PlayerList: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
   }, [props.lobbyState.maxPlayers])
 
   const playerList = []
-  for (const [_clientId, name] of Object.entries(props.lobbyState.clientNames)) {
+  for (const name of Object.values(props.lobbyState.clientNames)) {
     playerList.push(<><Player name={name}/><br/></>)
   }
   while (playerList.length < maxPlayers) {
