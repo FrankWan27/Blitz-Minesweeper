@@ -1,7 +1,0 @@
-# fly.toml file generated for blitz-mine on 2023-04-07T05:59:32-07:00
-
-app = "blitz-mine"
-primary_region = "sjc"
-
-[env]
-  PORT = "8080"
