@@ -68,13 +68,19 @@ export class GameGateway implements OnGatewayInit {
     client.lobby.emitGameState(client.id);
   }
 
-  @SubscribeMessage(ClientEvents.LobbySize)
-  onClientLobbySize(client: Client, data: Payloads.LobbyChangeSize): void {
+  @SubscribeMessage(ClientEvents.LobbySettings)
+  onClientSetLobbySettings(client: Client, data: Payloads.LobbySettings): void {
+    console.log(data);
     if (client.lobby.id != data.lobbyId) {
       throw new ServerException(
-        'You are not in the lobby you are trying to change settings for',
+        'You are not in the lobby you are trying to change settings for!',
       );
     }
-    client.lobby.setMaxClients(data.maxSize);
+    if (client.id != client.lobby.host) {
+      throw new ServerException(
+        'You are not the host of the lobby you are trying to change settings for!'
+      )
+    }
+    client.lobby.setLobbySettings(data);
   }
 }

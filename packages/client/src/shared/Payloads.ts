@@ -22,10 +22,20 @@ export namespace Payloads {
     gamePaused: boolean,
     gameEnded: boolean,
     playerCount: number,
-    maxPlayers: number,
     clientNames: ClientNamesMap,
     currentPlayer: ClientId,
     playerStatus: PlayerStatusMap
+  }
+
+  export type LobbySettings = {
+    lobbyId: string,
+    host?: ClientId,
+    maxPlayers?: number,
+    time?: number, // in seconds
+    penalty?: number, // in seconds
+    width?: number,
+    height?: number,
+    bombs?: number
   }
 
   export type ClientMove = {
@@ -34,17 +44,12 @@ export namespace Payloads {
     y: number
   }
 
-  export type LobbyChangeSize = {
-    lobbyId: string,
-    maxSize: number
-  }
-
   export type GameOver = {
     winnerId: string,
     winnerName: string,
     isWinner: boolean
   }
-  
+
   export type ServerException = {
     color?: string,
     message: string

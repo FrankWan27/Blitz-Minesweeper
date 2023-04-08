@@ -10,9 +10,7 @@ interface PlayerStatus {
   alive: boolean;
 }
 
-const BASE_TIME = 30 * 1000;
 const TIMER_INTERVAL = 100;
-const BOMB_PENALTY = 15 * 1000;
 
 export class TurnTimer {
   public readonly playerStatus: Map<ClientId, PlayerStatus> = new Map<
@@ -25,7 +23,7 @@ export class TurnTimer {
 
   private clientIdArray = [];
 
-  constructor(private readonly lobby: Lobby) {}
+  constructor(private readonly lobby: Lobby, private readonly baseTime: number, private readonly penalty: number) {}
 
   startGame() {
     this.lobby.clients.forEach((client) => {
@@ -33,7 +31,7 @@ export class TurnTimer {
         alive: true,
         timeout: null,
         lastMove: null,
-        timeRemaining: BASE_TIME,
+        timeRemaining: this.baseTime,
       });
     });
     this.clientIdArray = Array.from(this.lobby.clients.keys());
@@ -72,7 +70,7 @@ export class TurnTimer {
 
   bomb(clientId: ClientId) {
     const player = this.playerStatus.get(clientId);
-    player.timeRemaining -= BOMB_PENALTY;
+    player.timeRemaining -= this.penalty;
     if (player.timeRemaining <= 0) {
       player.alive = false;
       this.checkGameOver();

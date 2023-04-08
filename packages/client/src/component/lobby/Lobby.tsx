@@ -3,7 +3,7 @@ import { Payloads } from "shared/Payloads";
 import WaitLobby from "./WaitLobby";
 
 const Lobby: React.FC<LobbyProps> = (props) => {
-  
+
   return (
     <div>
     { props.lobbyId === "" ?
