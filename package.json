@@ -11,6 +11,7 @@
     ] 
   },
   "scripts": {
+    "install": "yarn --production",
     "build": "yarn workspace @blitz-minesweeper/client build && yarn workspace @blitz-minesweeper/server build",
     "start": "yarn workspace @blitz-minesweeper/server start:prod",
     "start:dev:client": "yarn workspace @blitz-minesweeper/client start:dev",
