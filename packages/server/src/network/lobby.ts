@@ -58,6 +58,9 @@ export class Lobby {
   }
 
   public clientMove(clientId: ClientId, move: Payloads.ClientMove) {
+    if (!this.gameStarted || this.gamePaused || this.gameEnded) {
+      return;
+    }
     if (!this.turnTimer.isCurrentPlayer(clientId)) {
       return;
     }
@@ -133,8 +136,13 @@ export class Lobby {
   }
 
   public gameOver(clientId: ClientId) {
-    console.log('GAMEOVER WINNER IS ', clientId);
     this.gameEnded = true;
+    this.game.revealBoard();
+    this.emitGameState();
+    this.broadcast('GAMEOVER WINNER IS ' + clientId);
+    this.clients.forEach((client) => {
+      client.emit(ServerEvents.GameOver, {winnerId: clientId, winnerName: client.name, isWinner: clientId === client.id});
+    });
   }
 
   public bomb(clientId: ClientId) {

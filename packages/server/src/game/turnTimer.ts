@@ -103,6 +103,7 @@ export class TurnTimer {
     });
     if (deadCount >= this.clientIdArray.length - 1) {
       this.lobby.gameOver(winner);
+      clearInterval(this.emitTimer);
     }
   }
 }

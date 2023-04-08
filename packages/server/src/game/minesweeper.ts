@@ -159,7 +159,17 @@ export class Minesweeper {
       this.lobby.bomb(clientId);
     }
   }
+
+  revealBoard(): void {
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        this.board[x][y].isHidden = false;
+      }
+    }
+  }
+  
 }
+
 
 class Tile {
   public isHidden = true;

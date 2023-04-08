@@ -1,5 +1,5 @@
 body {
-  background-color: #ff65b1;
+  background-color: #FDF4F5;
 }
 
 .container {
@@ -32,7 +32,7 @@ body {
 }
 
 .hidden:hover {
-  background-color: #e05bd2;
+  background-color: #BA90C6;
 }
 
 .revealed {

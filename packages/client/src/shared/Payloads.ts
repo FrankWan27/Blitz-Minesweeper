@@ -39,6 +39,12 @@ export namespace Payloads {
     maxSize: number
   }
 
+  export type GameOver = {
+    winnerId: string,
+    winnerName: string,
+    isWinner: boolean
+  }
+  
   export type ServerException = {
     color?: string,
     message: string

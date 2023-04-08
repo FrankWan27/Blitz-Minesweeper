@@ -6,6 +6,7 @@ export enum ServerEvents {
   GameStart = 'server.game.start',
   GameboardUpdate = 'server.gameboard.update',
   GameboardState = 'server.gameboard.state',
+  GameOver = 'server.game.over',
 }
 
 
