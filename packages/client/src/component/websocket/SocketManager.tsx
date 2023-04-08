@@ -117,8 +117,8 @@ export class SocketManager {
     this.socket.emit(ClientEvents.Move, { type: 'reveal', x, y })
   }
 
-  public changeMaxPlayers(lobbyId: string, maxSize: number) {
-    this.socket.emit(ClientEvents.LobbySize, {lobbyId, maxSize})
+  public setLobbySettings(data: Payloads.LobbySettings) {
+    this.socket.emit(ClientEvents.LobbySettings, data)
   }
 
   public setName(name: string) {

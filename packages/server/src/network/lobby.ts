@@ -6,6 +6,9 @@ import { ServerEvents } from '@shared/Events';
 import { ClientId, Payloads, PlayerStatus } from '@shared/Payloads';
 import { ServerException } from './server.exception';
 import { TurnTimer } from 'game/turnTimer';
+import { getRandomInt } from '@shared/Utils';
+
+const SECONDS_TO_MS = 1000;
 
 export class Lobby {
   public readonly id: LobbyId = nanoid(5);
@@ -18,29 +21,45 @@ export class Lobby {
   public gameEnded: boolean = false;
   public gamePaused: boolean = false;
 
-  private readonly game: Minesweeper = new Minesweeper(this, 16, 16, 40);
+  private game: Minesweeper;
+  private turnTimer: TurnTimer;
 
+  public host : ClientId;
   public maxClients = 2;
+  private time = 30;
+  private penalty = 15;
+  private width = 16;
+  private height = 16;
+  private bombs = 40;
 
-  private readonly turnTimer = new TurnTimer(this);
 
-  constructor(private readonly server: Server) {}
+  constructor(private readonly server: Server, client: Client) {
+    this.addClient(client);
+    this.host = client.id;
+  }
+
+  startGame() {
+    this.game = new Minesweeper(this, 16, 16, 40);
+    this.turnTimer = new TurnTimer(this, this.time * SECONDS_TO_MS, this.penalty * SECONDS_TO_MS);
+    this.gameStarted = true;
+    this.game.startGame();
+    this.turnTimer.startGame();
+  }
 
   public addClient(client: Client) {
     if (client.lobby != null) {
       throw new ServerException('You are already in a lobby!');
     }
-    // if (this.gameStarted) {
-    //   throw new ServerException("This lobby already has a game in progress!")
-    // }
+    if (this.gameStarted) {
+      throw new ServerException("This lobby already has a game in progress!")
+    }
     this.clients.set(client.id, client);
     client.join(this.id);
     client.lobby = this;
+    client.emit(ServerEvents.ClientJoinLobby, { lobbyId: this.id });
     this.emitLobbyState();
     if (this.clients.size >= this.maxClients) {
-      this.gameStarted = true;
-      this.game.startGame();
-      this.turnTimer.startGame();
+      this.startGame();
     }
   }
 
@@ -48,13 +67,22 @@ export class Lobby {
     this.clients.delete(client.id);
     client.leave(this.id);
     client.lobby = null;
+    if (client.id === this.host) {
+      this.host = Array.from(this.clients.keys())[getRandomInt(this.clients.size)];
+      this.emitLobbySettings();
+    }
     this.emitLobbyState();
     this.broadcast(client.name + ' has left the game!', 'orange');
   }
 
-  public setMaxClients(maxSize: number) {
-    this.maxClients = maxSize;
-    this.emitLobbyState();
+  public setLobbySettings(settings: Payloads.LobbySettings) {
+    this.host = settings.host || this.host;
+    this.time = settings.time || this.time;
+    this.penalty = settings.penalty || this.penalty;
+    this.width = settings.width || this.width;
+    this.height = settings.height || this.height;
+    this.bombs = settings.bombs || this.bombs;
+    this.emitLobbySettings();
   }
 
   public clientMove(clientId: ClientId, move: Payloads.ClientMove) {
@@ -105,12 +133,14 @@ export class Lobby {
 
   private getLobbyState(): Payloads.LobbyState {
     const playerStatus = {};
-    this.turnTimer.playerStatus.forEach((player, clientId) => {
-      playerStatus[clientId] = {
-        alive: player.alive,
-        timeRemaining: player.timeRemaining,
-      };
-    });
+    if (this.gameStarted) {
+      this.turnTimer.playerStatus.forEach((player, clientId) => {
+        playerStatus[clientId] = {
+          alive: player.alive,
+          timeRemaining: player.timeRemaining,
+        };
+      });
+    }
     const clientNames = {};
     this.clients.forEach((client, clientId) => {
       clientNames[clientId] = client.name;
@@ -121,11 +151,35 @@ export class Lobby {
       gamePaused: this.gamePaused,
       gameEnded: this.gameEnded,
       playerCount: this.clients.size,
-      maxPlayers: this.maxClients,
       clientNames: clientNames,
-      currentPlayer: this.turnTimer.currentPlayer,
+      currentPlayer: this.turnTimer?.currentPlayer || this.host,
       playerStatus: playerStatus,
     };
+  }
+
+  emitLobbySettings(clientId?: ClientId) {
+    if (clientId) {
+      this.clients
+        .get(clientId)
+        .emit(ServerEvents.LobbySettings, this.getLobbySettings());
+    } else {
+      this.clients.forEach((client) => {
+        client.emit(ServerEvents.LobbySettings, this.getLobbySettings());
+      });
+    }
+  }
+
+  private getLobbySettings(): Payloads.LobbySettings {
+    return {
+      lobbyId: this.id,
+      host: this.host,
+      maxPlayers: this.maxClients,
+      time: this.time,
+      penalty: this.penalty,
+      width: this.width,
+      height: this.height,
+      bombs: this.bombs,
+    }
   }
 
   public emitGameStart() {

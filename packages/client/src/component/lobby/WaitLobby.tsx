@@ -13,15 +13,15 @@ const WaitLobby: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
 }
 
 const PlayerList: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
-  const [maxPlayers, setMaxPlayers] = useState(props.lobbyState.maxPlayers);
+  const [maxPlayers, setMaxPlayers] = useState(2);
   
   useEffect(() => {
-    sm.changeMaxPlayers(props.lobbyState.lobbyId, maxPlayers)
+    sm.setLobbySettings({lobbyId: props.lobbyState.lobbyId, maxPlayers: maxPlayers})
   }, [maxPlayers, props.lobbyState.lobbyId])
 
-  useEffect(() => {
-    setMaxPlayers(props.lobbyState.maxPlayers);
-  }, [props.lobbyState.maxPlayers])
+  // useEffect(() => {
+  //   setMaxPlayers(props.lobbyState.maxPlayers);
+  // }, [props.lobbyState.maxPlayers])
 
   const playerList = []
   for (const name of Object.values(props.lobbyState.clientNames)) {

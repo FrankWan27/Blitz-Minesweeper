@@ -17,9 +17,8 @@ export class LobbyManager {
         "Can't create a new lobby, you are already in a lobby!",
       );
     }
-    const lobby = new Lobby(this.server);
+    const lobby = new Lobby(this.server, client);
     this.lobbies.set(lobby.id, lobby);
-    this.joinLobby(client, lobby.id);
     return lobby;
   }
 
@@ -43,7 +42,6 @@ export class LobbyManager {
     }
 
     lobby.addClient(client);
-    client.emit(ServerEvents.ClientJoinLobby, { lobbyId });
   }
 
   public initializeSocket(client: Client) {
