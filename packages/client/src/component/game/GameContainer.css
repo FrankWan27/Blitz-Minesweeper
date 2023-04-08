@@ -37,6 +37,7 @@ body {
 
 .revealed {
   background-color: #fff;
+  color: rgb(69, 69, 69);
 }
 
 .status {

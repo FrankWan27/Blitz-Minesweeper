@@ -1,8 +1,6 @@
 import { io, Socket } from 'socket.io-client';
-// import { ClientEvents, ServerEvents } from '../../shared/index';
 import { ClientEvents, ServerEvents } from '../../shared/Events';
 import { Payloads } from '../../shared/Payloads';
-// @ts-ignore
 import { showNotification } from '@mantine/notifications';
 
 export class SocketManager {
@@ -15,6 +13,10 @@ export class SocketManager {
     this.onDisconnect();
     this.onException();
     this.onMessage();
+  }
+  
+  public getId() : string {
+    return this.socket.id;
   }
 
   private onConnect(): void {
@@ -115,8 +117,8 @@ export class SocketManager {
     this.socket.emit(ClientEvents.Move, { type: 'reveal', x, y })
   }
 
-  public getId() : string {
-    return this.socket.id;
+  public changeMaxPlayers(lobbyId: string, maxSize: number) {
+    this.socket.emit(ClientEvents.LobbySize, {lobbyId, maxSize})
   }
 
   public setName(name: string) {

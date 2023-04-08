@@ -1,4 +1,3 @@
-import { useState } from "react";
 import JoinLobby from "./JoinLobby";
 import { Payloads } from "shared/Payloads";
 import WaitLobby from "./WaitLobby";
@@ -7,7 +6,7 @@ const Lobby: React.FC<LobbyProps> = (props) => {
   
   return (
     <div>
-    { props.lobbyId == "" ?
+    { props.lobbyId === "" ?
       <JoinLobby setLobbyId={props.setLobbyId} /> :
       <WaitLobby lobbyState={props.lobbyState} /> }
     </div>

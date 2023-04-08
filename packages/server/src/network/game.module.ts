@@ -11,4 +11,4 @@ import { LobbyManager } from './lobby.manager';
     LobbyManager,
   ],
 })
-export class GameModule { }
+export class GameModule {}

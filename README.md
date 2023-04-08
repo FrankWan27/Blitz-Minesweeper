@@ -10,3 +10,5 @@ TODO:
 FOR LATER:
 - flags
 - middle click reveal
+
+https://blitz.up.railway.app/

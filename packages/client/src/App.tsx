@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import GameManager from './component/GameManager';
-import { BrowserRouter, useLocation } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Notifications } from '@mantine/notifications';
 
 const App: React.FC = () => {

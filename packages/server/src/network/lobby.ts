@@ -1,11 +1,11 @@
-import { nanoid } from "nanoid"
-import { Server } from "socket.io"
-import { Client } from "./client";
-import { Minesweeper } from "game/minesweeper";
-import { ServerEvents } from "@shared/Events";
-import { ClientId, Payloads, PlayerStatus } from "@shared/Payloads";
-import { ServerException } from "./server.exception";
-import { TurnTimer } from "game/turnTimer";
+import { nanoid } from 'nanoid';
+import { Server } from 'socket.io';
+import { Client } from './client';
+import { Minesweeper } from 'game/minesweeper';
+import { ServerEvents } from '@shared/Events';
+import { ClientId, Payloads, PlayerStatus } from '@shared/Payloads';
+import { ServerException } from './server.exception';
+import { TurnTimer } from 'game/turnTimer';
 
 export class Lobby {
   public readonly id: LobbyId = nanoid(5);
@@ -20,20 +20,19 @@ export class Lobby {
 
   private readonly game: Minesweeper = new Minesweeper(this, 16, 16, 40);
 
-  public readonly maxClients = 2;
+  public maxClients = 2;
 
   private readonly turnTimer = new TurnTimer(this);
 
-  constructor(private readonly server: Server) {
-  }
+  constructor(private readonly server: Server) {}
 
   public addClient(client: Client) {
     if (client.lobby != null) {
-      throw new ServerException("You are already in a lobby!")
+      throw new ServerException('You are already in a lobby!');
     }
-    if (this.gameStarted) {
-      throw new ServerException("This lobby already has a game in progress!")
-    }
+    // if (this.gameStarted) {
+    //   throw new ServerException("This lobby already has a game in progress!")
+    // }
     this.clients.set(client.id, client);
     client.join(this.id);
     client.lobby = this;
@@ -49,7 +48,13 @@ export class Lobby {
     this.clients.delete(client.id);
     client.leave(this.id);
     client.lobby = null;
-    this.broadcast(client.name + " has left the game!", 'orange');
+    this.emitLobbyState();
+    this.broadcast(client.name + ' has left the game!', 'orange');
+  }
+
+  public setMaxClients(maxSize: number) {
+    this.maxClients = maxSize;
+    this.emitLobbyState();
   }
 
   public clientMove(clientId: ClientId, move: Payloads.ClientMove) {
@@ -67,54 +72,68 @@ export class Lobby {
   public emitGameState(clientId?: ClientId) {
     this.emitLobbyState(clientId);
     if (clientId) {
-      this.clients.get(clientId).emit(ServerEvents.GameboardState, this.game.getGameboardState(clientId));
+      this.clients
+        .get(clientId)
+        .emit(
+          ServerEvents.GameboardState,
+          this.game.getGameboardState(clientId),
+        );
     } else {
-      this.clients.forEach(client => {
-        client.emit(ServerEvents.GameboardState, this.game.getGameboardState(client.id));
+      this.clients.forEach((client) => {
+        client.emit(
+          ServerEvents.GameboardState,
+          this.game.getGameboardState(client.id),
+        );
       });
     }
   }
 
   public emitLobbyState(clientId?: ClientId) {
     if (clientId) {
-      this.clients.get(clientId).emit(ServerEvents.LobbyState, this.getLobbyState());
+      this.clients
+        .get(clientId)
+        .emit(ServerEvents.LobbyState, this.getLobbyState());
     } else {
-      this.clients.forEach(client => {
+      this.clients.forEach((client) => {
         client.emit(ServerEvents.LobbyState, this.getLobbyState());
       });
     }
   }
 
-  private getLobbyState() : Payloads.LobbyState{
-    const playerStatus = {}
+  private getLobbyState(): Payloads.LobbyState {
+    const playerStatus = {};
     this.turnTimer.playerStatus.forEach((player, clientId) => {
-      playerStatus[clientId] = {alive: player.alive, timeRemaining: player.timeRemaining};
-    })
-    const clientNames = {}
+      playerStatus[clientId] = {
+        alive: player.alive,
+        timeRemaining: player.timeRemaining,
+      };
+    });
+    const clientNames = {};
     this.clients.forEach((client, clientId) => {
       clientNames[clientId] = client.name;
-    })
+    });
     return {
       lobbyId: this.id,
       gameStarted: this.gameStarted,
       gamePaused: this.gamePaused,
       gameEnded: this.gameEnded,
       playerCount: this.clients.size,
+      maxPlayers: this.maxClients,
       clientNames: clientNames,
       currentPlayer: this.turnTimer.currentPlayer,
       playerStatus: playerStatus,
-    }
+    };
   }
 
   public emitGameStart() {
-    this.clients.forEach(client => {
+    this.clients.forEach((client) => {
       console.log(client.name, client.id);
       client.emit(ServerEvents.GameStart);
     });
   }
 
   public gameOver(clientId: ClientId) {
-    console.log("GAMEOVER WINNER IS ", clientId)
+    console.log('GAMEOVER WINNER IS ', clientId);
     this.gameEnded = true;
   }
 
@@ -125,10 +144,10 @@ export class Lobby {
   public broadcast(message: string, color?: string) {
     const data: Payloads.ServerMessage = {
       message,
-      color
-    }
+      color,
+    };
 
-    this.clients.forEach(client => {
+    this.clients.forEach((client) => {
       client.emit(ServerEvents.ServerMessage, data);
     });
   }
