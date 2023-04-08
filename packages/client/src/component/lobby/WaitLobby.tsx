@@ -2,6 +2,7 @@ import { Button, Select } from '@mantine/core';
 import socketManager from 'component/websocket/SocketManager';
 import React, { useEffect, useState } from 'react';
 import { Payloads } from 'shared/Payloads';
+import { getName } from 'shared/Utils';
 const sm = socketManager;
 const WaitLobby: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
   console.log(props.lobbyState);
@@ -24,22 +25,23 @@ const PlayerList: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
   // }, [props.lobbyState.maxPlayers])
 
   const playerList = []
-  for (const name of Object.values(props.lobbyState.clientNames)) {
-    playerList.push(<><Player name={name}/><br/></>)
+  for (const clientId of props.lobbyState.players) {
+    playerList.push(<><Player key={playerList.length} name={getName(clientId)}/><br/></>)
   }
   while (playerList.length < maxPlayers) {
     playerList.push(<><Player/><br/></>)
   }
   
+  const playerCount = props.lobbyState.players.length;
   return (
     <>
-    Players: {props.lobbyState.playerCount} / {maxPlayers}
+    Players: {playerCount} / {maxPlayers}
     <Select
       placeholder={maxPlayers + " Players"}
       onChange={(s) => setMaxPlayers(Number(s))}
       data={[
-        { value: '2', label: '2 Players', disabled:props.lobbyState.playerCount > 2 },
-        { value: '4', label: '4 Players', disabled:props.lobbyState.playerCount > 4},
+        { value: '2', label: '2 Players', disabled: playerCount > 2 },
+        { value: '4', label: '4 Players', disabled: playerCount > 4 },
         { value: '8', label: '8 Players' }    
       ]}
     />

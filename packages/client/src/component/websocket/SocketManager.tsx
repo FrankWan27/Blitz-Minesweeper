@@ -2,6 +2,7 @@ import { io, Socket } from 'socket.io-client';
 import { ClientEvents, ServerEvents } from '../../shared/Events';
 import { Payloads } from '../../shared/Payloads';
 import { showNotification } from '@mantine/notifications';
+import { storeName } from 'shared/Utils';
 
 export class SocketManager {
   public socket: Socket;
@@ -13,6 +14,7 @@ export class SocketManager {
     this.onDisconnect();
     this.onException();
     this.onMessage();
+    this.onClientName();
   }
   
   public getId() : string {
@@ -59,6 +61,14 @@ export class SocketManager {
         message: data.message,
         color: data.color || 'blue',
       })
+    })
+  }
+
+  public onClientName(): void {
+    this.socket.on(ServerEvents.ClientNamesMap, (data: Payloads.ClientNamesMap) => {
+      for (const [id, name] of Object.entries(data)) {
+        storeName(id, name);
+      }
     })
   }
 

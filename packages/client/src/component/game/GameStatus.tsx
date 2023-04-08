@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ClientId, Payloads } from "shared/Payloads";
+import { getName } from "shared/Utils";
 
 const Timer: React.FC<TimerProps> = (props) => {
   const[time, setTime] = useState(30 * 1000);
@@ -16,14 +17,14 @@ const Timer: React.FC<TimerProps> = (props) => {
   return (
     <div className={`timer ${active ? "active" : ""}`}>
       <div className='time'>{showTime(time)}</div>
-      <div className='name'>{props.lobbyState.clientNames[props.clientId]} {props.isPlayer? "(You)":""}</div>
+      <div className='name'>{getName(props.clientId)} {props.isPlayer? "(You)":""}</div>
     </div>
   )
 }
 
 export const GameStatus: React.FC<GameStatusProps> = (props) => {
   const timers = []
-  for (const clientId of Object.keys(props.lobbyState.clientNames)) {
+  for (const clientId of props.lobbyState.players) {
     timers.push(<Timer lobbyState={props.lobbyState} clientId={clientId} isPlayer={clientId === props.clientId}/>)
   }
 

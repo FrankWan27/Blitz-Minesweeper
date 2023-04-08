@@ -54,7 +54,6 @@ const defaultLobbyState : Payloads.LobbyState = {
   gameStarted: false,
   gamePaused: false,
   gameEnded: false,
-  playerCount: 0,
-  clientNames: {},
+  players: [],
   playerStatus: {}
 }

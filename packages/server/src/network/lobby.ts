@@ -58,6 +58,7 @@ export class Lobby {
     client.lobby = this;
     client.emit(ServerEvents.ClientJoinLobby, { lobbyId: this.id });
     this.emitLobbyState();
+    this.emitPlayerNames();
     if (this.clients.size >= this.maxClients) {
       this.startGame();
     }
@@ -101,7 +102,7 @@ export class Lobby {
   }
 
   public emitGameState(clientId?: ClientId) {
-    this.emitLobbyState(clientId);
+    this.emitLobbyState();
     if (clientId) {
       this.clients
         .get(clientId)
@@ -119,16 +120,30 @@ export class Lobby {
     }
   }
 
-  public emitLobbyState(clientId?: ClientId) {
-    if (clientId) {
-      this.clients
-        .get(clientId)
-        .emit(ServerEvents.LobbyState, this.getLobbyState());
-    } else {
-      this.clients.forEach((client) => {
-        client.emit(ServerEvents.LobbyState, this.getLobbyState());
-      });
-    }
+  public emitPlayerNames(): void {
+    this.server.to(this.id).emit(ServerEvents.ClientNamesMap, this.getPlayerNames());
+  
+  }
+
+  public getPlayerNames(): Payloads.ClientNamesMap {
+    const clientNames = {};
+    this.clients.forEach((client, clientId) => {
+      clientNames[clientId] = client.name;
+    });
+    return clientNames;
+  }
+
+  public emitLobbyState() {
+    this.server.to(this.id).emit(ServerEvents.LobbyState, this.getLobbyState());
+    // if (clientId) {
+    //   this.clients
+    //     .get(clientId)
+    //     .emit(ServerEvents.LobbyState, this.getLobbyState());
+    // } else {
+    //   this.clients.forEach((client) => {
+    //     client.emit(ServerEvents.LobbyState, this.getLobbyState());
+    //   });
+    // }
   }
 
   private getLobbyState(): Payloads.LobbyState {
@@ -141,17 +156,13 @@ export class Lobby {
         };
       });
     }
-    const clientNames = {};
-    this.clients.forEach((client, clientId) => {
-      clientNames[clientId] = client.name;
-    });
+    
     return {
       lobbyId: this.id,
       gameStarted: this.gameStarted,
       gamePaused: this.gamePaused,
       gameEnded: this.gameEnded,
-      playerCount: this.clients.size,
-      clientNames: clientNames,
+      players: Array.from(this.clients.keys()),
       currentPlayer: this.turnTimer?.currentPlayer || this.host,
       playerStatus: playerStatus,
     };
@@ -163,9 +174,7 @@ export class Lobby {
         .get(clientId)
         .emit(ServerEvents.LobbySettings, this.getLobbySettings());
     } else {
-      this.clients.forEach((client) => {
-        client.emit(ServerEvents.LobbySettings, this.getLobbySettings());
-      });
+      this.server.to(this.id).emit(ServerEvents.LobbySettings, this.getLobbySettings());
     }
   }
 

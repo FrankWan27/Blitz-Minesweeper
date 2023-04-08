@@ -2,6 +2,7 @@ import {
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { ClientEvents, ServerEvents } from '@shared/Events';
 import { Payloads } from '@shared/Payloads';
@@ -14,6 +15,9 @@ import { getRandomName } from '@shared/Utils';
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit {
   constructor(private readonly lobbyManager: LobbyManager) {}
+
+  @WebSocketServer() 
+  private server: any;
 
   afterInit(server: any): any {
     this.lobbyManager.server = server;
@@ -58,6 +62,7 @@ export class GameGateway implements OnGatewayInit {
     } else {
       client.name = data.name;
     }
+    client.lobby?.emitPlayerNames();
   }
 
   @SubscribeMessage(ClientEvents.GetGameState)
@@ -65,7 +70,7 @@ export class GameGateway implements OnGatewayInit {
     if (!client.lobby) {
       throw new ServerException('You are not in a lobby');
     }
-    client.lobby.emitGameState(client.id);
+    client.lobby.emitGameState();
   }
 
   @SubscribeMessage(ClientEvents.LobbySettings)

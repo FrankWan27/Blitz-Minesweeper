@@ -8,6 +8,7 @@ export enum ServerEvents {
   GameboardUpdate = 'server.gameboard.update',
   GameboardState = 'server.gameboard.state',
   GameOver = 'server.game.over',
+  ClientNamesMap = 'server.client.names'
 }
 
 
