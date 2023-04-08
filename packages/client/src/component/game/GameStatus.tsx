@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ClientId, Payloads } from "shared/Payloads";
+import { Card } from '@mantine/core';
 
 const Timer: React.FC<TimerProps> = (props) => {
   const[time, setTime] = useState(30 * 1000);
