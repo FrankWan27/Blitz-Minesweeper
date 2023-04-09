@@ -1,7 +1,6 @@
 import { Server } from 'socket.io';
 import { Lobby, LobbyId } from './lobby';
 import { Client } from './client';
-import { ServerEvents } from '@shared/Events';
 import { ServerException } from './server.exception';
 import { getRandomName } from '@shared/Utils';
 import { Cron } from '@nestjs/schedule';
@@ -19,6 +18,8 @@ export class LobbyManager {
     }
     const lobby = new Lobby(this.server, client);
     this.lobbies.set(lobby.id, lobby);
+    lobby.host = client.id;
+    console.log(lobby.host, client.id)
     return lobby;
   }
 

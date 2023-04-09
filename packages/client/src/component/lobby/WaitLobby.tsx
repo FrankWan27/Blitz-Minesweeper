@@ -3,30 +3,28 @@ import socketManager from 'component/websocket/SocketManager';
 import React, { useEffect, useState } from 'react';
 import { Payloads } from 'shared/Payloads';
 import { getName } from 'shared/Utils';
+import LobbySettings from './LobbySettings';
 const sm = socketManager;
-const WaitLobby: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
+const WaitLobby: React.FC<WaitLobbyProps> = (props) => {
   console.log(props.lobbyState);
   return (
-    <div>
-      <PlayerList lobbyState={props.lobbyState}/>
+    <div className='waitLobby'>
+      <PlayerList lobbyState={props.lobbyState} lobbySettings={props.lobbySettings}/>
+      <LobbySettings lobbySettings={props.lobbySettings}/>
     </div>
   )
 }
 
-const PlayerList: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
+const PlayerList: React.FC<WaitLobbyProps> = (props) => {
   const [maxPlayers, setMaxPlayers] = useState(2);
   
   useEffect(() => {
-    sm.setLobbySettings({lobbyId: props.lobbyState.lobbyId, maxPlayers: maxPlayers})
-  }, [maxPlayers, props.lobbyState.lobbyId])
-
-  // useEffect(() => {
-  //   setMaxPlayers(props.lobbyState.maxPlayers);
-  // }, [props.lobbyState.maxPlayers])
+    setMaxPlayers(props.lobbySettings.maxPlayers || 2);
+  }, [props.lobbySettings.maxPlayers])
 
   const playerList = []
   for (const clientId of props.lobbyState.players) {
-    playerList.push(<><Player key={playerList.length} name={getName(clientId)}/><br/></>)
+    playerList.push(<><Player key={playerList.length} name={getName(clientId)} isHost={clientId === props.lobbySettings.host} /><br/></>)
   }
   while (playerList.length < maxPlayers) {
     playerList.push(<><Player/><br/></>)
@@ -34,11 +32,12 @@ const PlayerList: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
   
   const playerCount = props.lobbyState.players.length;
   return (
-    <>
+    <div className='list'>
     Players: {playerCount} / {maxPlayers}
     <Select
+      disabled={sm.getId() !== props.lobbySettings.host}
       placeholder={maxPlayers + " Players"}
-      onChange={(s) => setMaxPlayers(Number(s))}
+      onChange={(s) => sm.setLobbySettings({lobbyId: props.lobbyState.lobbyId, maxPlayers: Number(s)})}
       data={[
         { value: '2', label: '2 Players', disabled: playerCount > 2 },
         { value: '4', label: '4 Players', disabled: playerCount > 4 },
@@ -46,13 +45,18 @@ const PlayerList: React.FC<{lobbyState: Payloads.LobbyState }> = (props) => {
       ]}
     />
     {playerList}
-  </>)
+  </div>)
 }
 
-const Player: React.FC<{name?: string}> = (props) => {
+const Player: React.FC<{name?: string, isHost?: boolean}> = (props) => {
   return (
-    <Button>{props.name || 'Waiting for player...'}</Button>
+    <Button>{props.name || 'Waiting for player...'} {props.isHost ? ' (Host)' : ''}</Button>
   )
+}
+
+export type WaitLobbyProps = {
+  lobbyState: Payloads.LobbyState, 
+  lobbySettings: Payloads.LobbySettings 
 }
 
 export default WaitLobby

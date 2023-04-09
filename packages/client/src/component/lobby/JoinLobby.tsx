@@ -18,7 +18,7 @@ const JoinLobby: React.FC<JoinLobbyProps> = (props) => {
     sm.joinLobby(lobbyFromUrl);
   }
   return (
-    <div>
+    <div className='joinLobby'>
       <Modal opened={opened} onClose={close} title="Join Private Lobby">
         <TextInput onChange={(e) => setJoinLobby(e.target.value)} placeholder="Enter Lobby ID"></TextInput>
         <Button onClick={() => sm.joinLobby(joinLobby)}>Join!</Button>

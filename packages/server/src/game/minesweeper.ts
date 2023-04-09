@@ -154,7 +154,6 @@ export class Minesweeper {
         }
       });
     }
-    tile.isHidden = false;
     if (tile.isBomb) {
       this.lobby.bomb(clientId);
     }

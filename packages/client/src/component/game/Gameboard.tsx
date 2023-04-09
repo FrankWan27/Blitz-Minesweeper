@@ -45,7 +45,7 @@ interface TileProps {
 
 export const Gameboard: React.FC<GameboardProps> = (props) => {
   const grid = [];
-  const rowSize = 16;
+  const rowSize = props.width;
 
   for (let y = 0; y < props.height; y++) {
     for (let x = 0; x < props.width; x++) {

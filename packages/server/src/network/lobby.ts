@@ -34,12 +34,12 @@ export class Lobby {
 
 
   constructor(private readonly server: Server, client: Client) {
-    this.addClient(client);
     this.host = client.id;
+    this.addClient(client);
   }
 
   startGame() {
-    this.game = new Minesweeper(this, 16, 16, 40);
+    this.game = new Minesweeper(this, this.width, this.height, this.bombs);
     this.turnTimer = new TurnTimer(this, this.time * SECONDS_TO_MS, this.penalty * SECONDS_TO_MS);
     this.gameStarted = true;
     this.game.startGame();
@@ -59,6 +59,7 @@ export class Lobby {
     client.emit(ServerEvents.ClientJoinLobby, { lobbyId: this.id });
     this.emitLobbyState();
     this.emitPlayerNames();
+    this.emitLobbySettings();
     if (this.clients.size >= this.maxClients) {
       this.startGame();
     }
@@ -77,7 +78,10 @@ export class Lobby {
   }
 
   public setLobbySettings(settings: Payloads.LobbySettings) {
+    console.log("before", this.host);
     this.host = settings.host || this.host;
+    console.log("after", this.host);
+    this.maxClients = settings.maxPlayers || this.maxClients;
     this.time = settings.time || this.time;
     this.penalty = settings.penalty || this.penalty;
     this.width = settings.width || this.width;
@@ -135,15 +139,6 @@ export class Lobby {
 
   public emitLobbyState() {
     this.server.to(this.id).emit(ServerEvents.LobbyState, this.getLobbyState());
-    // if (clientId) {
-    //   this.clients
-    //     .get(clientId)
-    //     .emit(ServerEvents.LobbyState, this.getLobbyState());
-    // } else {
-    //   this.clients.forEach((client) => {
-    //     client.emit(ServerEvents.LobbyState, this.getLobbyState());
-    //   });
-    // }
   }
 
   private getLobbyState(): Payloads.LobbyState {
@@ -168,17 +163,12 @@ export class Lobby {
     };
   }
 
-  emitLobbySettings(clientId?: ClientId) {
-    if (clientId) {
-      this.clients
-        .get(clientId)
-        .emit(ServerEvents.LobbySettings, this.getLobbySettings());
-    } else {
-      this.server.to(this.id).emit(ServerEvents.LobbySettings, this.getLobbySettings());
-    }
+  emitLobbySettings() {
+    this.server.to(this.id).emit(ServerEvents.LobbySettings, this.getLobbySettings());
   }
 
   private getLobbySettings(): Payloads.LobbySettings {
+    console.log("host while emitting", this.host);
     return {
       lobbyId: this.id,
       host: this.host,

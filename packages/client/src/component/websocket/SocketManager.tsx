@@ -90,6 +90,12 @@ export class SocketManager {
     })
   }
 
+  public onLobbySettings(func: (data: Payloads.LobbySettings) => void): void {
+    this.socket.on(ServerEvents.LobbySettings, (data: Payloads.LobbySettings) => {
+      func(data);
+    })
+  }
+
   public onGameStart(func: () => void): void {
     this.socket.on(ServerEvents.GameStart, () => {
       func();
