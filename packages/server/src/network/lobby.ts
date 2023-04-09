@@ -56,6 +56,9 @@ export class Lobby {
     if (this.gameStarted) {
       throw new ServerException("This lobby already has a game in progress!")
     }
+    if (this.clients.size >= this.maxClients) {
+      throw new ServerException("This lobby has reached the maximum player count!")
+    }
     this.clients.set(client.id, client);
     client.join(this.id);
     client.lobby = this;
@@ -63,9 +66,7 @@ export class Lobby {
     this.emitLobbyState();
     this.emitPlayerNames();
     this.emitLobbySettings();
-    if (this.clients.size >= this.maxClients) {
-      this.startGame();
-    }
+    
   }
 
   public removeClient(client: Client) {
