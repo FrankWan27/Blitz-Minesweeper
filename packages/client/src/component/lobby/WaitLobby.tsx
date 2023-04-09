@@ -5,7 +5,6 @@ import { Payloads } from 'shared/Payloads';
 import { getName } from 'shared/Utils';
 import LobbySettings from './LobbySettings';
 import { IconLink, IconPlayerPlay } from '@tabler/icons-react';
-import { useLocation } from 'react-router-dom';
 const sm = socketManager;
 const WaitLobby: React.FC<WaitLobbyProps> = (props) => {
   return (
