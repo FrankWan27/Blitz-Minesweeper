@@ -88,4 +88,19 @@ export class GameGateway implements OnGatewayInit {
     }
     client.lobby.setLobbySettings(data);
   }
+
+  @SubscribeMessage(ClientEvents.StartGame)
+  onClientStartGame(client: Client, data: {lobbyId: string}) {
+    if (client.lobby.id != data.lobbyId) {
+      throw new ServerException(
+        'You are not in the lobby you are trying start!',
+      );
+    }
+    if (client.id != client.lobby.host) {
+      throw new ServerException(
+        'You are not the host of the lobby you are trying to start!'
+      )
+    }
+    client.lobby.startGame();
+  }
 }

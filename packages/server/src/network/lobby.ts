@@ -39,6 +39,9 @@ export class Lobby {
   }
 
   startGame() {
+    if (this.bombs > this.width * this.height - 1) {
+      throw new ServerException("Unable to start game! Too many bombs for board size!");
+    }
     this.game = new Minesweeper(this, this.width, this.height, this.bombs);
     this.turnTimer = new TurnTimer(this, this.time * SECONDS_TO_MS, this.penalty * SECONDS_TO_MS);
     this.gameStarted = true;

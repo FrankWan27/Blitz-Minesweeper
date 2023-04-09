@@ -4,13 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { Payloads } from 'shared/Payloads';
 import { getName } from 'shared/Utils';
 import LobbySettings from './LobbySettings';
+import { IconLink, IconPlayerPlay } from '@tabler/icons-react';
+import { useLocation } from 'react-router-dom';
 const sm = socketManager;
 const WaitLobby: React.FC<WaitLobbyProps> = (props) => {
-  console.log(props.lobbyState);
   return (
     <div className='waitLobby'>
       <PlayerList lobbyState={props.lobbyState} lobbySettings={props.lobbySettings}/>
       <LobbySettings lobbySettings={props.lobbySettings}/>
+      <Button leftIcon={<IconLink/>} onClick={() => {navigator.clipboard.writeText(window.location.href)}}>Invite</Button>
+      <Button leftIcon={<IconPlayerPlay/>} onClick={() => sm.startGame(props.lobbySettings.lobbyId)}>Start Game</Button>
     </div>
   )
 }

@@ -140,6 +140,10 @@ export class SocketManager {
   public setName(name: string) {
     this.socket.emit(ClientEvents.SetName, { name })
   }
+
+  public startGame(lobbyId: string) {
+    this.socket.emit(ClientEvents.StartGame, {lobbyId: lobbyId})
+  }
 }
 
 
