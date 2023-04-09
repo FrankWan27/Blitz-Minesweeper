@@ -1,17 +1,6 @@
-import {
-  ActionIcon,
-  Card,
-  Grid,
-  Group,
-  NumberInput,
-  NumberInputHandlers,
-  Switch,
-  Tabs,
-  rem,
-} from "@mantine/core";
+import { Grid, Switch, Tabs } from "@mantine/core";
 import { IconPhoto, IconSettings } from "@tabler/icons-react";
 import socketManager from "component/websocket/SocketManager";
-import { useRef } from "react";
 import { Payloads } from "shared/Payloads";
 import {
   InsanePreset,
@@ -19,12 +8,13 @@ import {
   MediumPreset,
   SmallPreset,
 } from "./Presets";
+import SettingsPreset from "./SettingsPreset";
+import SettingsInput from "./SettingsInput";
 
 const sm = socketManager;
 const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
   props
 ) => {
-  console.log(props.lobbySettings.width);
   return (
     <>
       <Tabs color="violet" variant="pills" defaultValue="presets">
@@ -39,7 +29,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
 
         <Tabs.Panel value="presets" pt="xs">
           <Grid>
-            <SettingPreset
+            <SettingsPreset
               label="Small"
               description="8x8 Board with 10 Mines"
               settings={{
@@ -47,7 +37,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 ...SmallPreset,
               }}
             />
-            <SettingPreset
+            <SettingsPreset
               label="Medium"
               description="16x16 Board with 40 Mines"
               settings={{
@@ -55,7 +45,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 ...MediumPreset,
               }}
             />
-            <SettingPreset
+            <SettingsPreset
               label="Large"
               description="30x16 Board with 99 Mines"
               settings={{
@@ -63,7 +53,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 ...LargePreset,
               }}
             />
-            <SettingPreset
+            <SettingsPreset
               label="Insane"
               description="30x30 Board with 199 Mines"
               settings={{
@@ -75,7 +65,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
         </Tabs.Panel>
 
         <Tabs.Panel value="settings" pt="xs">
-          <SettingInput
+          <SettingsInput
             label="Board Width"
             value={props.lobbySettings.width || 0}
             onChange={(val) =>
@@ -84,9 +74,10 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 width: val,
               })
             }
+            disabled={sm.getId() !== props.lobbySettings.host}
             max={30}
           />
-          <SettingInput
+          <SettingsInput
             label="Board Height"
             value={props.lobbySettings.height || 0}
             onChange={(val) =>
@@ -95,9 +86,10 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 height: val,
               })
             }
+            disabled={sm.getId() !== props.lobbySettings.host}
             max={30}
           />
-          <SettingInput
+          <SettingsInput
             label="Mines"
             value={props.lobbySettings.bombs || 0}
             onChange={(val) =>
@@ -106,13 +98,14 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 bombs: val,
               })
             }
+            disabled={sm.getId() !== props.lobbySettings.host}
             max={
               (props.lobbySettings.width || 1) *
                 (props.lobbySettings.height || 1) -
               1
             }
           />
-          <SettingInput
+          <SettingsInput
             label="Time"
             value={props.lobbySettings.time || 0}
             onChange={(val) =>
@@ -121,8 +114,9 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 time: val,
               })
             }
+            disabled={sm.getId() !== props.lobbySettings.host}
           />
-          <SettingInput
+          <SettingsInput
             label="Penalty"
             value={props.lobbySettings.penalty || 0}
             onChange={(val) =>
@@ -131,71 +125,13 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 penalty: val,
               })
             }
+            disabled={sm.getId() !== props.lobbySettings.host}
           />
           <Switch label="Sudden Death" />
         </Tabs.Panel>
       </Tabs>
     </>
   );
-};
-
-const SettingPreset: React.FC<SettingsPresetProps> = (props) => {
-  return (
-    <Grid.Col>
-      <Card onClick={() => sm.setLobbySettings(props.settings)}>
-        <Card.Section>{props.label}</Card.Section>
-        {props.description}
-      </Card>
-    </Grid.Col>
-  );
-};
-
-const SettingInput: React.FC<SettingsInputProps> = (props) => {
-  const handlers = useRef<NumberInputHandlers>();
-
-  return (
-    <div className="settingInput">
-      <Group spacing={5}>
-        {props.label}
-        <ActionIcon
-          size={42}
-          variant="default"
-          onClick={() => handlers.current?.decrement()}
-        >
-          –
-        </ActionIcon>
-        <NumberInput
-          hideControls
-          value={props.value}
-          onChange={props.onChange}
-          handlersRef={handlers}
-          min={1}
-          max={props.max}
-          styles={{ input: { width: rem(54), textAlign: "center" } }}
-        />
-
-        <ActionIcon
-          size={42}
-          variant="default"
-          onClick={() => handlers.current?.increment()}
-        >
-          +
-        </ActionIcon>
-      </Group>
-    </div>
-  );
-};
-type SettingsPresetProps = {
-  label: string;
-  description: string;
-  settings: Payloads.LobbySettings;
-};
-
-type SettingsInputProps = {
-  label: string;
-  value: number;
-  onChange: (val: number) => void;
-  max?: number;
 };
 
 export default LobbySettings;

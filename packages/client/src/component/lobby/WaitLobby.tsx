@@ -24,6 +24,7 @@ const WaitLobby: React.FC<WaitLobbyProps> = (props) => {
       </Button>
       <Button
         leftIcon={<IconPlayerPlay />}
+        disabled={sm.getId() !== props.lobbySettings.host}
         onClick={() => sm.startGame(props.lobbySettings.lobbyId)}
       >
         Start Game
