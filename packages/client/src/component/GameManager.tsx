@@ -18,42 +18,56 @@ export default function GameManager() {
     sm.onJoinLobby((data) => {
       updateURL(data.lobbyId);
       setLobbyId(data.lobbyId);
-    })
+    });
 
     sm.onGameboardState((data) => {
       setBoard(data.tiles);
       setWidth(data.width);
       setHeight(data.height);
-      setGameStart(true)
-    })
+      setGameStart(true);
+    });
 
     sm.onGameStart(() => {
       sm.getGameState();
-    })
+    });
 
     sm.onLobbyState((data) => {
       setLobbyState(data);
-    })
+    });
 
     const updateURL = (str: string) => {
       window.history.replaceState("", "", "/" + str);
-    }
+    };
   }, []);
 
   return (
     <div className="game">
       In Lobby: {lobbyId}
-      {gameStart ? <GameContainer board={board} width={width} height={height} lobbyState={lobbyState} clientId={sm.getId()}/>: <Lobby lobbyId={lobbyId} setLobbyId={setLobbyId} lobbyState={lobbyState}/>}
+      {gameStart ? (
+        <GameContainer
+          board={board}
+          width={width}
+          height={height}
+          lobbyState={lobbyState}
+          clientId={sm.getId()}
+        />
+      ) : (
+        <Lobby
+          lobbyId={lobbyId}
+          setLobbyId={setLobbyId}
+          lobbyState={lobbyState}
+        />
+      )}
     </div>
   );
 }
 
-const defaultLobbyState : Payloads.LobbyState = {
+const defaultLobbyState: Payloads.LobbyState = {
   currentPlayer: "N/A",
   lobbyId: "",
   gameStarted: false,
   gamePaused: false,
   gameEnded: false,
   players: [],
-  playerStatus: {}
-}
+  playerStatus: {},
+};

@@ -1,5 +1,5 @@
 body {
-  background-color: #FDF4F5;
+  background-color: #fdf4f5;
 }
 
 .container {
@@ -24,7 +24,7 @@ body {
   border-radius: 4px;
   aspect-ratio: 1 / 1;
   cursor: pointer;
-  transition: background-color .2s ease-out;
+  transition: background-color 0.2s ease-out;
 }
 
 .hidden {
@@ -32,7 +32,7 @@ body {
 }
 
 .hidden:hover {
-  background-color: #BA90C6;
+  background-color: #ba90c6;
 }
 
 .revealed {
@@ -61,7 +61,7 @@ body {
 }
 
 .active {
-  transition: .2s linear;
+  transition: 0.2s linear;
   background-color: #e05bd2;
 }
 
