@@ -4,6 +4,7 @@ import WaitLobby from "./WaitLobby";
 import socketManager from "component/websocket/SocketManager";
 import { useState } from "react";
 import "./Lobby.css";
+import { Container } from "@mantine/core";
 
 const sm = socketManager;
 const Lobby: React.FC<LobbyProps> = (props) => {
@@ -15,7 +16,7 @@ const Lobby: React.FC<LobbyProps> = (props) => {
     console.log(data);
   });
   return (
-    <div className="lobby">
+    <Container>
       {props.lobbyId === "" ? (
         <JoinLobby setLobbyId={props.setLobbyId} />
       ) : (
@@ -24,7 +25,7 @@ const Lobby: React.FC<LobbyProps> = (props) => {
           lobbySettings={lobbySettings}
         />
       )}
-    </div>
+    </Container>
   );
 };
 

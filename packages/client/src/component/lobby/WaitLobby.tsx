@@ -1,4 +1,4 @@
-import { Button, Select } from "@mantine/core";
+import { Button, Group, Select, Stack } from "@mantine/core";
 import socketManager from "component/websocket/SocketManager";
 import React, { useEffect, useState } from "react";
 import { Payloads } from "shared/Payloads";
@@ -8,28 +8,32 @@ import { IconLink, IconPlayerPlay } from "@tabler/icons-react";
 const sm = socketManager;
 const WaitLobby: React.FC<WaitLobbyProps> = (props) => {
   return (
-    <div className="waitLobby">
+    <Group position="center">
       <PlayerList
         lobbyState={props.lobbyState}
         lobbySettings={props.lobbySettings}
       />
-      <LobbySettings lobbySettings={props.lobbySettings} />
-      <Button
-        leftIcon={<IconLink />}
-        onClick={() => {
-          navigator.clipboard.writeText(window.location.href);
-        }}
-      >
-        Invite
-      </Button>
-      <Button
-        leftIcon={<IconPlayerPlay />}
-        disabled={sm.getId() !== props.lobbySettings.host}
-        onClick={() => sm.startGame(props.lobbySettings.lobbyId)}
-      >
-        Start Game
-      </Button>
-    </div>
+      <Stack>
+        <LobbySettings lobbySettings={props.lobbySettings} />
+        <Group>
+          <Button
+            leftIcon={<IconLink />}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+            }}
+          >
+            Invite
+          </Button>
+          <Button
+            leftIcon={<IconPlayerPlay />}
+            disabled={sm.getId() !== props.lobbySettings.host}
+            onClick={() => sm.startGame(props.lobbySettings.lobbyId)}
+          >
+            Start Game
+          </Button>
+        </Group>
+      </Stack>
+    </Group>
   );
 };
 

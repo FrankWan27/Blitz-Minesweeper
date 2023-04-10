@@ -1,4 +1,4 @@
-import { Grid, Switch, Tabs } from "@mantine/core";
+import { Container, Grid, Switch, Tabs } from "@mantine/core";
 import { IconPhoto, IconSettings } from "@tabler/icons-react";
 import socketManager from "component/websocket/SocketManager";
 import { Payloads } from "shared/Payloads";
@@ -16,7 +16,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
   props
 ) => {
   return (
-    <>
+    <Container size={500}>
       <Tabs color="violet" variant="pills" defaultValue="presets">
         <Tabs.List>
           <Tabs.Tab value="presets" icon={<IconPhoto size="1rem" />}>
@@ -28,7 +28,6 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
         </Tabs.List>
 
         <Tabs.Panel value="presets" pt="xs">
-          <Grid>
             <SettingsPreset
               label="Small"
               description="8x8 Board with 10 Mines"
@@ -61,7 +60,6 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
                 ...InsanePreset,
               }}
             />
-          </Grid>
         </Tabs.Panel>
 
         <Tabs.Panel value="settings" pt="xs">
@@ -127,10 +125,9 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
             }
             disabled={sm.getId() !== props.lobbySettings.host}
           />
-          <Switch label="Sudden Death" />
         </Tabs.Panel>
       </Tabs>
-    </>
+    </Container>
   );
 };
 

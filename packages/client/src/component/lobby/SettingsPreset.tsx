@@ -5,12 +5,10 @@ import { Payloads } from "shared/Payloads";
 const sm = socketManager;
 const SettingsPreset: React.FC<SettingsPresetProps> = (props) => {
   return (
-    <Grid.Col>
       <Card onClick={() => sm.setLobbySettings(props.settings)}>
         <Card.Section>{props.label}</Card.Section>
         {props.description}
       </Card>
-    </Grid.Col>
   );
 };
 

@@ -12,34 +12,36 @@ const SettingsInput: React.FC<SettingsInputProps> = (props) => {
 
   return (
     <div className="settingInput">
-      <Group spacing={5}>
+      <Group position="apart">
         {props.label}
-        <ActionIcon
-          size={42}
-          variant="default"
-          onClick={() => handlers.current?.decrement()}
-          disabled={props.disabled}
-        >
-          –
-        </ActionIcon>
-        <NumberInput
-          hideControls
-          value={props.value}
-          onChange={props.onChange}
-          handlersRef={handlers}
-          min={1}
-          max={props.max}
-          styles={{ input: { width: rem(54), textAlign: "center" } }}
-        />
+        <Group spacing={5}>
+          <ActionIcon
+            size={42}
+            variant="default"
+            onClick={() => handlers.current?.decrement()}
+            disabled={props.disabled}
+          >
+            –
+          </ActionIcon>
+          <NumberInput
+            hideControls
+            value={props.value}
+            onChange={props.onChange}
+            handlersRef={handlers}
+            min={1}
+            max={props.max}
+            styles={{ input: { width: rem(54), textAlign: "center" } }}
+          />
 
-        <ActionIcon
-          size={42}
-          variant="default"
-          onClick={() => handlers.current?.increment()}
-          disabled={props.disabled}
-        >
-          +
-        </ActionIcon>
+          <ActionIcon
+            size={42}
+            variant="default"
+            onClick={() => handlers.current?.increment()}
+            disabled={props.disabled}
+          >
+            +
+          </ActionIcon>
+        </Group>
       </Group>
     </div>
   );
