@@ -4,6 +4,8 @@ import { Lobby } from 'network/lobby';
 
 export class Minesweeper {
   private board: Tile[][];
+  private first: boolean = true;
+
   constructor(
     private readonly lobby: Lobby,
     private width,
@@ -25,16 +27,23 @@ export class Minesweeper {
         this.board[x][y] = new Tile(x, y);
       }
     }
-    this.plantBombs(this.board);
+  }
+
+  firstMove(x: number, y: number) {
+    this.first = false;
+    this.plantBombs(this.board, x, y);
     this.updateHints(this.board);
   }
 
-  plantBombs(board: Tile[][]): void {
+  plantBombs(board: Tile[][], x: number, y: number): void {
     let bombsPlanted = 0;
+    let safeTiles = this.getNeighbors(board, x, y);
+    safeTiles.push(board[x][y]);
+
     while (bombsPlanted < this.bombs) {
       let randX = getRandomInt(this.width);
       let randY = getRandomInt(this.height);
-      if (!board[randX][randY].isBomb) {
+      if (!board[randX][randY].isBomb && !safeTiles.includes(board[randX][randY])) {
         board[randX][randY].isBomb = true;
         bombsPlanted++;
       }
@@ -88,12 +97,12 @@ export class Minesweeper {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }
 
-  public getGameboardState(_clientId: ClientId): Payloads.GameboardState {
+  public getGameboardState(clientId: ClientId): Payloads.GameboardState {
     const state = [];
     for (let x = 0; x < this.width; x++) {
       state.push([]);
       for (let y = 0; y < this.height; y++) {
-        state[x][y] = this.tileToTileState(this.board[x][y]);
+        state[x][y] = this.tileToTileState(clientId, this.board[x][y]);
       }
     }
 
@@ -104,8 +113,12 @@ export class Minesweeper {
     };
   }
 
-  private tileToTileState(tile: Tile): TileState {
+  private tileToTileState(clientId: ClientId, tile: Tile): TileState {
+    
     if (tile.isHidden) {
+      if (tile.isFlagged(clientId)) {
+        return 'flag';
+      }
       return 'hidden';
     }
     if (tile.isBomb) {
@@ -118,12 +131,17 @@ export class Minesweeper {
   }
 
   validateMove(move: Payloads.ClientMove): boolean {
+    if (!this.inBounds(move.x, move.y)) {
+      return false;
+    }
+    let tile = this.board[move.x][move.y];
     switch (move.type) {
       case 'reveal':
-        if (!this.inBounds(move.x, move.y)) {
+        if (!tile.isHidden) {
           return false;
         }
-        let tile = this.board[move.x][move.y];
+        break;
+      case 'flag':
         if (!tile.isHidden) {
           return false;
         }
@@ -137,8 +155,13 @@ export class Minesweeper {
   executeMove(clientId: ClientId, move: Payloads.ClientMove): void {
     switch (move.type) {
       case 'reveal':
+        if (this.first) {
+          this.firstMove(move.x, move.y);
+        }
         this.revealTile(clientId, move.x, move.y);
         break;
+      case 'flag':
+        this.flagTile(clientId, move.x, move.y);
       default:
         break;
     }
@@ -159,6 +182,12 @@ export class Minesweeper {
     }
   }
 
+  flagTile(clientId: ClientId, x: number, y: number): void {
+    this.board[x][y].toggleFlag(clientId);
+    console.log("After", this.board[x][y].flag)
+    
+  }
+
   revealBoard(): void {
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
@@ -174,6 +203,21 @@ class Tile {
   public isHidden = true;
   public isBomb;
   public hint: number;
+  public flag: Set<ClientId>;
 
-  constructor(public x: number, public y: number) {}
+  constructor(public x: number, public y: number) {
+    this.flag = new Set<ClientId>();
+  }
+
+  isFlagged(clientId: ClientId) {
+    return this.flag.has(clientId);
+  }
+
+  toggleFlag(clientId: ClientId) {
+    if (this.flag.has(clientId)) {
+      this.flag.delete(clientId);
+    } else {
+      this.flag.add(clientId);
+    }
+  }
 }

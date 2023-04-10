@@ -24,10 +24,15 @@ const Tile: React.FC<TileProps> = (props) => {
     sm.move(props.x, props.y);
   };
 
+  const tileFlag = () => {
+    if (props.state !== "hidden" && props.state !== "flag") return;
+    sm.flag(props.x, props.y);
+  }
+
   return (
-    <Grid.Col span={1} onClick={tileClick}>
+    <Grid.Col span={1} onClick={tileClick} onContextMenu={(e) => {e.preventDefault(); tileFlag();}}>
       <div
-        className={`tile ${props.state === "hidden" ? "hidden" : "revealed"}`}
+        className={`tile ${props.state === "hidden" || props.state === "flag" ? "hidden" : "revealed"} ${props.state === "flag" ? "flag" : ""}`}
       >
         {getText()}
       </div>

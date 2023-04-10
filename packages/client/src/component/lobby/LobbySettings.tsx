@@ -73,6 +73,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
               })
             }
             disabled={sm.getId() !== props.lobbySettings.host}
+            min={4}
             max={30}
           />
           <SettingsInput
@@ -85,6 +86,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
               })
             }
             disabled={sm.getId() !== props.lobbySettings.host}
+            min={4}
             max={30}
           />
           <SettingsInput
@@ -100,7 +102,7 @@ const LobbySettings: React.FC<{ lobbySettings: Payloads.LobbySettings }> = (
             max={
               (props.lobbySettings.width || 1) *
                 (props.lobbySettings.height || 1) -
-              1
+              9
             }
           />
           <SettingsInput

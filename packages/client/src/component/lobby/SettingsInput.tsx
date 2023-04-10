@@ -28,7 +28,7 @@ const SettingsInput: React.FC<SettingsInputProps> = (props) => {
             value={props.value}
             onChange={props.onChange}
             handlersRef={handlers}
-            min={1}
+            min={props.min || 1}
             max={props.max}
             styles={{ input: { width: rem(54), textAlign: "center" } }}
           />
@@ -51,6 +51,7 @@ type SettingsInputProps = {
   label: string;
   value: number;
   onChange: (val: number) => void;
+  min?: number;
   max?: number;
   disabled?: boolean;
 };

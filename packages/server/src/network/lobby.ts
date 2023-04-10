@@ -39,7 +39,7 @@ export class Lobby {
   }
 
   startGame() {
-    if (this.bombs > this.width * this.height - 1) {
+    if (this.bombs > this.width * this.height - 9) {
       throw new ServerException("Unable to start game! Too many bombs for board size!");
     }
     this.game = new Minesweeper(this, this.width, this.height, this.bombs);
@@ -98,14 +98,17 @@ export class Lobby {
     if (!this.gameStarted || this.gamePaused || this.gameEnded) {
       return;
     }
-    if (!this.turnTimer.isCurrentPlayer(clientId)) {
+    if (move.type != 'flag' && !this.turnTimer.isCurrentPlayer(clientId)) {
       return;
     }
     if (!this.game.validateMove(move)) {
       return;
     }
     this.game.executeMove(clientId, move);
-    this.turnTimer.nextPlayer();
+    console.log(move);
+    if (move.type != 'flag') {
+      this.turnTimer.nextPlayer();
+    }
     this.emitGameState();
   }
 

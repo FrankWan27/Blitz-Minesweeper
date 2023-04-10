@@ -27,7 +27,7 @@ body {
   transition: background-color 0.2s ease-out;
 }
 
-.hidden {
+.hidden, .flag {
   background-color: #a75cb7;
 }
 

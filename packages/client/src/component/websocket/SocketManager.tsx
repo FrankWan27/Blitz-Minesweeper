@@ -150,6 +150,10 @@ export class SocketManager {
     this.socket.emit(ClientEvents.Move, { type: "reveal", x, y });
   }
 
+  public flag(x: number, y: number) {
+    this.socket.emit(ClientEvents.Move, { type: "flag", x, y});
+  }
+
   public setLobbySettings(data: Payloads.LobbySettings) {
     this.socket.emit(ClientEvents.LobbySettings, data);
   }
