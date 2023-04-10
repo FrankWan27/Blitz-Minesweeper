@@ -8,7 +8,6 @@ const sm = socketManager;
 
 export default function GameManager() {
   const [lobbyId, setLobbyId] = useState("");
-  const [gameStart, setGameStart] = useState(false);
   const [board, setBoard] = useState<TileState[][]>([]);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -24,7 +23,6 @@ export default function GameManager() {
       setBoard(data.tiles);
       setWidth(data.width);
       setHeight(data.height);
-      setGameStart(true);
     });
 
     sm.onGameStart(() => {

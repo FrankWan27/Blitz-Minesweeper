@@ -37,7 +37,7 @@ const PostGame: React.FC<{lobbyState: Payloads.LobbyState}> = (props) => {
 
   useEffect(() => {
     close();
-  }, [props.lobbyState.gameEnded])
+  }, [props.lobbyState.gameEnded, close])
 
   return (
   <><Modal opened={opened} onClose={close} title="Game Over" centered>
