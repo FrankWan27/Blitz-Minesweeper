@@ -42,11 +42,17 @@ export class Lobby {
     if (this.bombs > this.width * this.height - 9) {
       throw new ServerException("Unable to start game! Too many bombs for board size!");
     }
+    console.log("starting game");
     this.game = new Minesweeper(this, this.width, this.height, this.bombs);
     this.turnTimer = new TurnTimer(this, this.time * SECONDS_TO_MS, this.penalty * SECONDS_TO_MS);
     this.gameStarted = true;
     this.game.startGame();
     this.turnTimer.startGame();
+  }
+
+  restartGame() {
+    this.gameEnded = false;
+    this.startGame();
   }
 
   public addClient(client: Client) {
@@ -105,7 +111,6 @@ export class Lobby {
       return;
     }
     this.game.executeMove(clientId, move);
-    console.log(move);
     if (move.type != 'flag') {
       this.turnTimer.nextPlayer();
     }
@@ -175,7 +180,6 @@ export class Lobby {
   }
 
   private getLobbySettings(): Payloads.LobbySettings {
-    console.log("host while emitting", this.host);
     return {
       lobbyId: this.id,
       host: this.host,
@@ -199,10 +203,10 @@ export class Lobby {
     this.gameEnded = true;
     this.game.revealBoard();
     this.emitGameState();
-    this.broadcast('GAMEOVER WINNER IS ' + clientId);
-    this.clients.forEach((client) => {
-      client.emit(ServerEvents.GameOver, {winnerId: clientId, winnerName: client.name, isWinner: clientId === client.id});
-    });
+    console.log(clientId);
+    console.log(this.clients.get(clientId));
+    this.broadcast('GAMEOVER WINNER IS ' + this.clients.get(clientId).name);
+    this.server.to(this.id).emit(ServerEvents.GameOver, {winnerId: clientId});
   }
 
   public bomb(clientId: ClientId) {

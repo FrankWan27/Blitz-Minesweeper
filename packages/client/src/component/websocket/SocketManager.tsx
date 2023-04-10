@@ -130,6 +130,12 @@ export class SocketManager {
     });
   }
 
+  public onGameOver(func: (data: Payloads.GameOver) => void) {
+    this.socket.on(ServerEvents.GameOver, (data) => {
+      func(data);
+    });
+  }
+
   public joinLobby(lobbyId: string) {
     this.socket.emit(ClientEvents.LobbyJoin, { lobbyId });
   }
@@ -151,7 +157,7 @@ export class SocketManager {
   }
 
   public flag(x: number, y: number) {
-    this.socket.emit(ClientEvents.Move, { type: "flag", x, y});
+    this.socket.emit(ClientEvents.Move, { type: "flag", x, y });
   }
 
   public setLobbySettings(data: Payloads.LobbySettings) {
@@ -164,6 +170,14 @@ export class SocketManager {
 
   public startGame(lobbyId: string) {
     this.socket.emit(ClientEvents.StartGame, { lobbyId: lobbyId });
+  }
+
+  public restartGame(lobbyId: string) {
+    this.socket.emit(ClientEvents.RestartGame, { lobbyId: lobbyId });
+  }
+
+  public backToLobby(lobbyId: string) {
+    this.socket.emit(ClientEvents.BackToLobby, { lobbyId: lobbyId });
   }
 }
 

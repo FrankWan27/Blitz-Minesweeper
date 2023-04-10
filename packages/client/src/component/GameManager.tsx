@@ -10,8 +10,8 @@ export default function GameManager() {
   const [lobbyId, setLobbyId] = useState("");
   const [gameStart, setGameStart] = useState(false);
   const [board, setBoard] = useState<TileState[][]>([]);
-  const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(1);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
   const [lobbyState, setLobbyState] = useState(defaultLobbyState);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function GameManager() {
   return (
     <div className="game">
       In Lobby: {lobbyId}
-      {gameStart ? (
+      {lobbyState.gameStarted ? (
         <GameContainer
           board={board}
           width={width}

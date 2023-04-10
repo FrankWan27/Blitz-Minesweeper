@@ -103,4 +103,24 @@ export class GameGateway implements OnGatewayInit {
     }
     client.lobby.startGame();
   }
+
+  @SubscribeMessage(ClientEvents.RestartGame)
+  onClientRestartGame(client: Client, data: {lobbyId: string}) {
+    if (client.lobby.id != data.lobbyId) {
+      throw new ServerException(
+        'You are not in the lobby you are trying start!',
+      );
+    }
+    client.lobby.restartGame();
+  }
+
+  @SubscribeMessage(ClientEvents.BackToLobby)
+  onClientBackToLobby(client: Client, data: {lobbyId: string}) {
+    if (client.lobby.id != data.lobbyId) {
+      throw new ServerException(
+        'You are not in the lobby you are trying to go back to!',
+      );
+    }
+    client.lobby.gameStarted = false;
+  }
 }

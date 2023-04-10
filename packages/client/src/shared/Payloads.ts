@@ -43,9 +43,7 @@ export namespace Payloads {
   };
 
   export type GameOver = {
-    winnerId: string;
-    winnerName: string;
-    isWinner: boolean;
+    winnerId: ClientId;
   };
 
   export type ServerException = {

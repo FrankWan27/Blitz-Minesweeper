@@ -19,6 +19,7 @@ export class TurnTimer {
   >();
 
   public currentPlayer = null;
+  private timeStopped = false;
   private emitTimer;
 
   private clientIdArray = [];
@@ -47,6 +48,9 @@ export class TurnTimer {
   }
 
   nextPlayer() {
+    if (this.timeStopped) {
+      return;
+    }
     if (!this.emitTimer) {
       this.emitTimer = setInterval(() => {
         this.updatePlayerStatus(Date.now());
@@ -101,7 +105,15 @@ export class TurnTimer {
     });
     if (deadCount >= this.clientIdArray.length - 1) {
       this.lobby.gameOver(winner);
-      clearInterval(this.emitTimer);
+      this.stop();
     }
+  }
+
+  stop() {
+    this.playerStatus.forEach((client) => {
+      clearTimeout(client.timeout);
+    });
+    clearInterval(this.emitTimer);
+    this.timeStopped = true;
   }
 }
