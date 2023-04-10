@@ -140,6 +140,10 @@ export class SocketManager {
     this.socket.emit(ClientEvents.LobbyJoin, { lobbyId });
   }
 
+  public leaveLobby() {
+    this.socket.emit(ClientEvents.LobbyLeave);
+  }
+
   public quickJoin(): void {
     this.socket.emit(ClientEvents.LobbyQuickJoin);
   }
@@ -169,15 +173,15 @@ export class SocketManager {
   }
 
   public startGame(lobbyId: string) {
-    this.socket.emit(ClientEvents.StartGame, { lobbyId: lobbyId });
+    this.socket.emit(ClientEvents.StartGame, { lobbyId });
   }
 
   public restartGame(lobbyId: string) {
-    this.socket.emit(ClientEvents.RestartGame, { lobbyId: lobbyId });
+    this.socket.emit(ClientEvents.RestartGame, { lobbyId });
   }
 
   public backToLobby(lobbyId: string) {
-    this.socket.emit(ClientEvents.BackToLobby, { lobbyId: lobbyId });
+    this.socket.emit(ClientEvents.BackToLobby, { lobbyId });
   }
 }
 

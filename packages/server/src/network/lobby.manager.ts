@@ -4,6 +4,7 @@ import { Client } from './client';
 import { ServerException } from './server.exception';
 import { getRandomName } from '@shared/Utils';
 import { Cron } from '@nestjs/schedule';
+import { ServerEvents } from '@shared/Events';
 
 const LOBBY_MAX_LIFETIME = 60 * 60 * 1000; // one hour
 export class LobbyManager {
@@ -43,6 +44,11 @@ export class LobbyManager {
     }
 
     lobby.addClient(client);
+  }
+
+  public leaveLobby(client: Client): void {
+    client.lobby?.removeClient(client);
+    client.emit(ServerEvents.ClientJoinLobby, {lobbyId: ""})
   }
 
   public initializeSocket(client: Client) {

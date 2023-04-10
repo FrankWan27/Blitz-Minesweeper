@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Payloads, TileState } from "shared/Payloads";
 import { GameContainer } from "./game/GameContainer";
 import Lobby from "./lobby/Lobby";
+import './style.css';
 
 const sm = socketManager;
 
@@ -40,7 +41,6 @@ export default function GameManager() {
 
   return (
     <div className="game">
-      In Lobby: {lobbyId}
       {lobbyState.gameStarted ? (
         <GameContainer
           board={board}

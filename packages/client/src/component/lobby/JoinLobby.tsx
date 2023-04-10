@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import socketManager from "../websocket/SocketManager";
 import { useLocation } from "react-router-dom";
-import { Button, Modal, TextInput } from "@mantine/core";
+import {
+  Button,
+  MantineProvider,
+  Modal,
+  Stack,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 const sm = socketManager;
 const JoinLobby: React.FC<JoinLobbyProps> = (props) => {
@@ -26,18 +33,28 @@ const JoinLobby: React.FC<JoinLobbyProps> = (props) => {
         ></TextInput>
         <Button onClick={() => sm.joinLobby(joinLobby)}>Join!</Button>
       </Modal>
-      <TextInput
-        placeholder="Enter your name (or leave blank for a random one)"
-        onChange={(e) => setName(e.target.value)}
-      />
-      <Button color="green.4" onClick={() => sm.quickJoin()}>
-        Quick Join!
-      </Button>
-      <br />
-      <Button onClick={() => sm.createLobby()}>Create Lobby</Button>
-      <Button color="grape" onClick={open}>
-        Join Private Lobby
-      </Button>
+      <MantineProvider
+        theme={{
+          headings: { fontFamily: "Times New Roman, sans-serif" },
+        }}
+      >
+        <Title color="#867070">Blitz Minesweeper</Title>
+      </MantineProvider>
+      <Stack>
+        <TextInput
+          placeholder="Enter your name (or leave blank for a random one)"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Button color="blue.3" variant="outline" onClick={() => sm.quickJoin()}>
+          Quick Join!
+        </Button>
+        <Button color="blue.3" variant="outline" onClick={() => sm.createLobby()}>
+          Create Lobby
+        </Button>
+        <Button color="blue.3" variant="outline" onClick={open}>
+          Join Private Lobby
+        </Button>
+      </Stack>
     </div>
   );
 };

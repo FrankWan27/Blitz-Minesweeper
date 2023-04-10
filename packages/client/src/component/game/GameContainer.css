@@ -11,7 +11,7 @@ body {
 
 .board {
   flex: 3;
-  background-image: linear-gradient(#4b2467, #3d1d54);
+  background-image: linear-gradient(#F5EBEB, #F5EBEB);
   padding: 6px;
   border-radius: 5px;
   margin: 1px;
@@ -28,15 +28,15 @@ body {
 }
 
 .hidden, .flag {
-  background-color: #a75cb7;
+  background-color: #D5B4B4;
 }
 
 .hidden:hover {
-  background-color: #ba90c6;
+  background-color: #867070;
 }
 
 .revealed {
-  background-color: #fff;
+  background-color: #f0dddd;
   color: rgb(69, 69, 69);
 }
 
@@ -44,7 +44,7 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-image: linear-gradient(#4b2467, #3d1d54);
+  background-image: linear-gradient(#F5EBEB, #F5EBEB);
   padding: 15px;
   border-radius: 8px;
   gap: 10px;
@@ -55,14 +55,14 @@ body {
   display: flex;
   padding: 15px;
   gap: 15px;
-  background-color: #a75cb7;
+  background-color: #D5B4B4;
   color: #fff;
   border-radius: 6px;
 }
 
 .active {
   transition: 0.2s linear;
-  background-color: #e05bd2;
+  background-color: #867070;
 }
 
 @media (max-width: 480px) {

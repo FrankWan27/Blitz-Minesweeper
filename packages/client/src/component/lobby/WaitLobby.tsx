@@ -1,14 +1,17 @@
-import { Button, Group, Select, Stack } from "@mantine/core";
+import { ActionIcon, Button, Group, Select, Stack } from "@mantine/core";
 import socketManager from "component/websocket/SocketManager";
 import React, { useEffect, useState } from "react";
 import { Payloads } from "shared/Payloads";
 import { getName } from "shared/Utils";
 import LobbySettings from "./LobbySettings";
-import { IconLink, IconPlayerPlay } from "@tabler/icons-react";
+import { IconArrowBackUp, IconLink, IconPlayerPlay } from "@tabler/icons-react";
 const sm = socketManager;
 const WaitLobby: React.FC<WaitLobbyProps> = (props) => {
   return (
     <Group position="center">
+      <ActionIcon onClick={() => sm.leaveLobby()}>
+        <IconArrowBackUp size="xl" />
+      </ActionIcon>
       <PlayerList
         lobbyState={props.lobbyState}
         lobbySettings={props.lobbySettings}

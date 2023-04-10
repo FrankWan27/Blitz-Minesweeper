@@ -42,6 +42,11 @@ export class GameGateway implements OnGatewayInit {
     this.lobbyManager.joinLobby(client, data.lobbyId);
   }
 
+  @SubscribeMessage(ClientEvents.LobbyLeave)
+  onLobbyLeave(client: Client, data: Payloads.LobbyId): void {
+    this.lobbyManager.leaveLobby(client);
+  }
+
   @SubscribeMessage(ClientEvents.LobbyQuickJoin)
   onClientQuickJoin(client: Client): void {
     this.lobbyManager.quickJoin(client);
@@ -91,12 +96,12 @@ export class GameGateway implements OnGatewayInit {
 
   @SubscribeMessage(ClientEvents.StartGame)
   onClientStartGame(client: Client, data: {lobbyId: string}) {
-    if (client.lobby.id != data.lobbyId) {
+    if (client.lobby?.id != data.lobbyId) {
       throw new ServerException(
         'You are not in the lobby you are trying start!',
       );
     }
-    if (client.id != client.lobby.host) {
+    if (client.id != client.lobby?.host) {
       throw new ServerException(
         'You are not the host of the lobby you are trying to start!'
       )
