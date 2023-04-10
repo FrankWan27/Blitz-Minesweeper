@@ -1,4 +1,4 @@
-import { Card, Grid } from "@mantine/core";
+import { Card } from "@mantine/core";
 import socketManager from "component/websocket/SocketManager";
 import { Payloads } from "shared/Payloads";
 

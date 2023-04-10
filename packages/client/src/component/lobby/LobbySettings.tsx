@@ -1,4 +1,4 @@
-import { Container, Grid, Switch, Tabs } from "@mantine/core";
+import { Container, Tabs } from "@mantine/core";
 import { IconPhoto, IconSettings } from "@tabler/icons-react";
 import socketManager from "component/websocket/SocketManager";
 import { Payloads } from "shared/Payloads";
