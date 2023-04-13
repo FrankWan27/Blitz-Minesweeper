@@ -210,6 +210,7 @@ export class Lobby {
 
   public gameOver(clientId: ClientId) {
     this.gameEnded = true;
+    this.turnTimer.stop();
     this.game.revealBoard();
     this.emitGameState();
     this.broadcast('GAMEOVER WINNER IS ' + this.clients.get(clientId).name);
