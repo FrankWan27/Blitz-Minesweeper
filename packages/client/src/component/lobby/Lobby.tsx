@@ -13,7 +13,6 @@ const Lobby: React.FC<LobbyProps> = (props) => {
   });
   sm.onLobbySettings((data) => {
     setLobbySettings(data);
-    console.log(data);
   });
   return (
     <Container>

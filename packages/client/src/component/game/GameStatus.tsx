@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { ClientId, Payloads } from "shared/Payloads";
 import { getName } from "shared/Utils";
+import useSound from "use-sound";
+import ping from "../../assets/ping.mp3";
 
 const Timer: React.FC<TimerProps> = (props) => {
   const [time, setTime] = useState(30 * 1000);
   const [active, setActive] = useState(false);
+  const [sound] = useSound(ping, { volume: 0.5 });
   useEffect(() => {
     setActive(props.lobbyState.currentPlayer === props.clientId);
     setTime(props.lobbyState.playerStatus[props.clientId].timeRemaining);
   }, [props.lobbyState, props.clientId]);
+
+  useEffect(() => {
+    if (props.isPlayer && active) {
+      sound();
+    }
+  }, [active, sound, props.isPlayer])
 
   const showTime = (ms: number) => {
     let sec = ms / 1000;

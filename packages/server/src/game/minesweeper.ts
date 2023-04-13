@@ -43,7 +43,10 @@ export class Minesweeper {
     while (bombsPlanted < this.bombs) {
       let randX = getRandomInt(this.width);
       let randY = getRandomInt(this.height);
-      if (!board[randX][randY].isBomb && !safeTiles.includes(board[randX][randY])) {
+      if (
+        !board[randX][randY].isBomb &&
+        !safeTiles.includes(board[randX][randY])
+      ) {
         board[randX][randY].isBomb = true;
         bombsPlanted++;
       }
@@ -114,7 +117,6 @@ export class Minesweeper {
   }
 
   private tileToTileState(clientId: ClientId, tile: Tile): TileState {
-    
     if (tile.isHidden) {
       if (tile.isFlagged(clientId)) {
         return 'flag';
@@ -184,8 +186,6 @@ export class Minesweeper {
 
   flagTile(clientId: ClientId, x: number, y: number): void {
     this.board[x][y].toggleFlag(clientId);
-    console.log("After", this.board[x][y].flag)
-    
   }
 
   revealBoard(): void {
@@ -195,9 +195,21 @@ export class Minesweeper {
       }
     }
   }
-  
-}
 
+  checkWin(): boolean {
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        if (
+          this.board[x][y].isHidden &&
+          !this.board[x][y].isBomb
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+}
 
 class Tile {
   public isHidden = true;

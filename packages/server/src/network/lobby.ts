@@ -69,10 +69,19 @@ export class Lobby {
     client.join(this.id);
     client.lobby = this;
     client.emit(ServerEvents.ClientJoinLobby, { lobbyId: this.id });
+    if(!this.hasHost) {
+      this.host = client.id;
+    }
     this.emitLobbyState();
     this.emitPlayerNames();
     this.emitLobbySettings();
-    
+  }
+
+  private hasHost(): boolean {
+    if (!this.host || this.clients.has(this.host)) {
+      return false;
+    }
+    return true;
   }
 
   public removeClient(client: Client) {
@@ -88,9 +97,7 @@ export class Lobby {
   }
 
   public setLobbySettings(settings: Payloads.LobbySettings) {
-    console.log("before", this.host);
     this.host = settings.host || this.host;
-    console.log("after", this.host);
     this.maxClients = settings.maxPlayers || this.maxClients;
     this.time = settings.time || this.time;
     this.penalty = settings.penalty || this.penalty;
@@ -113,6 +120,9 @@ export class Lobby {
     this.game.executeMove(clientId, move);
     if (move.type != 'flag') {
       this.turnTimer.nextPlayer();
+      if(this.game.checkWin()) {
+        this.gameOver(this.turnTimer.getMostTime());
+      }
     }
     this.emitGameState();
   }
@@ -194,7 +204,6 @@ export class Lobby {
 
   public emitGameStart() {
     this.clients.forEach((client) => {
-      console.log(client.name, client.id);
       client.emit(ServerEvents.GameStart);
     });
   }
@@ -203,8 +212,6 @@ export class Lobby {
     this.gameEnded = true;
     this.game.revealBoard();
     this.emitGameState();
-    console.log(clientId);
-    console.log(this.clients.get(clientId));
     this.broadcast('GAMEOVER WINNER IS ' + this.clients.get(clientId).name);
     this.server.to(this.id).emit(ServerEvents.GameOver, {winnerId: clientId});
   }

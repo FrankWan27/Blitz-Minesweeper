@@ -20,7 +20,6 @@ export class LobbyManager {
     const lobby = new Lobby(this.server, client);
     this.lobbies.set(lobby.id, lobby);
     lobby.host = client.id;
-    console.log(lobby.host, client.id)
     return lobby;
   }
 

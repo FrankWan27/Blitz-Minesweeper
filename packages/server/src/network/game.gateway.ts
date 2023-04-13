@@ -80,7 +80,6 @@ export class GameGateway implements OnGatewayInit {
 
   @SubscribeMessage(ClientEvents.LobbySettings)
   onClientSetLobbySettings(client: Client, data: Payloads.LobbySettings): void {
-    console.log(data);
     if (client.lobby.id != data.lobbyId) {
       throw new ServerException(
         'You are not in the lobby you are trying to change settings for!',

@@ -116,4 +116,16 @@ export class TurnTimer {
     clearInterval(this.emitTimer);
     this.timeStopped = true;
   }
+
+  getMostTime() {
+    let id;
+    let time;
+    this.playerStatus.forEach((client, clientId) => {
+      if (!time || client.timeRemaining > time) {
+        id = clientId;
+        time = client.timeRemaining;
+      }
+    })
+    return id;
+  }
 }
