@@ -4,7 +4,6 @@ TODO:
 - Handle single player
 - Asks for player name
 - Timer not ending the game
-- End game when only mines are left
 
 FOR LATER:
 - middle click reveal
