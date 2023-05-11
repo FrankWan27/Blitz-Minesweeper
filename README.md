@@ -5,7 +5,7 @@ TODO:
 - Asks for player name
 - Timer not ending the game
 
-FOR LATER:
+TBD:
 - middle click reveal
 - add themes (light/dark mode)
 - add mute button once change bg
