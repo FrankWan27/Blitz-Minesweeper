@@ -8,7 +8,7 @@
   "workspaces": {
     "packages": [
       "packages/*"
-    ] 
+    ]
   },
   "scripts": {
     "build": "yarn workspace @blitz-minesweeper/client build && yarn workspace @blitz-minesweeper/server build",
@@ -17,5 +17,6 @@
     "start:dev:server": "yarn workspace @blitz-minesweeper/server start:dev",
     "start:prod:client": "yarn workspace @blitz-minesweeper/client start:prod",
     "start:prod:server": "yarn workspace @blitz-minesweeper/server start:prod"
-  }
+  },
+  "dependencies": {}
 }

@@ -6,7 +6,6 @@ interface PlayerStatus {
   //in milliseconds
   timeRemaining: number;
   lastMove: number | null;
-  timeout: NodeJS.Timeout | null;
   alive: boolean;
 }
 
@@ -24,13 +23,16 @@ export class TurnTimer {
 
   private clientIdArray = [];
 
-  constructor(private readonly lobby: Lobby, private readonly baseTime: number, private readonly penalty: number) {}
+  constructor(
+    private readonly lobby: Lobby,
+    private readonly baseTime: number,
+    private readonly penalty: number,
+  ) {}
 
   startGame() {
     this.lobby.clients.forEach((client) => {
       this.playerStatus.set(client.id, {
         alive: true,
-        timeout: null,
         lastMove: null,
         timeRemaining: this.baseTime,
       });
@@ -66,10 +68,6 @@ export class TurnTimer {
       ];
     const nextPlayer = this.playerStatus.get(this.currentPlayer);
     nextPlayer.lastMove = date;
-    nextPlayer.timeout = setTimeout(() => {
-      nextPlayer.alive = false;
-      this.checkGameOver();
-    }, nextPlayer.timeRemaining);
   }
 
   bomb(clientId: ClientId) {
@@ -82,18 +80,21 @@ export class TurnTimer {
   }
 
   updatePlayerStatus(date: number) {
+    console.log('updating player status');
     const curStatus = this.playerStatus.get(this.currentPlayer);
-    if (curStatus.timeout) {
-      clearTimeout(curStatus.timeout);
-    }
     if (curStatus.lastMove) {
       curStatus.timeRemaining =
         curStatus.timeRemaining - (date - curStatus.lastMove);
       curStatus.lastMove = date;
     }
+    if (curStatus.timeRemaining <= 0) {
+      curStatus.alive = false;
+      this.checkGameOver();
+    }
   }
 
   checkGameOver() {
+    console.log('Checking for gaemover');
     let winner;
     let deadCount = 0;
     this.playerStatus.forEach((client, clientId) => {
@@ -110,9 +111,6 @@ export class TurnTimer {
   }
 
   stop() {
-    this.playerStatus.forEach((client) => {
-      clearTimeout(client.timeout);
-    });
     clearInterval(this.emitTimer);
     this.timeStopped = true;
   }
@@ -125,7 +123,7 @@ export class TurnTimer {
         id = clientId;
         time = client.timeRemaining;
       }
-    })
+    });
     return id;
   }
 }
