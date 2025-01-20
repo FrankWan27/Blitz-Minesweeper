@@ -131,6 +131,7 @@ export class SocketManager {
   }
 
   public onGameOver(func: (data: Payloads.GameOver) => void) {
+    console.log("gameover");
     this.socket.on(ServerEvents.GameOver, (data) => {
       func(data);
     });

@@ -3,11 +3,14 @@
 TODO:
 - Handle single player
 - Asks for player name
-- Timer not ending the game
+- Fix post-game menu
+- Lobby options?
+- Lobby Menu
+- Move queueing
+- Animation when hitting bomb
 
 LATER:
-- middle click reveal
 - add themes (light/dark mode)
 - add mute button once change bg
 
-https://blitz.up.railway.app/
+https://blitz-mine.onrender.com
